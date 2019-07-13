@@ -10,6 +10,7 @@ autopep8 = "*"
 [packages]
 gym = "*"
 pygame = "*"
+opencv-python = "*"
 
 [requires]
 python_version = "3.6"
