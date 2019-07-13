@@ -1,7 +1,17 @@
-import os
-import glob
+"Module to perform unittest"
+import unittest
+from creature import creature
 
-for example in glob.glob("examples/*.py")[10:]:
-    file_name = os.path.basename(example).split(".")[0]
-    print("Starting module %s" % file_name)
-    os.system("pipenv run python -m examples.%s" % file_name)
+
+class TestCases(unittest.TestCase):
+    "Class that contains test cases for project"
+
+    def test_create_creature_connection_graph(self):
+        "Tests the creature connection graph funciton"
+        expected_value = 10
+        array = creature.create_creature_connection_graph(5)
+        self.assertEqual(array.shape[0], expected_value)
+
+
+if __name__ == "__main__":
+    unittest.main()
