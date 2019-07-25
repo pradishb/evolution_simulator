@@ -10,8 +10,8 @@ def line_to_rectangle(p1, p2, thickness):
 
     length = sqrt(dx ** 2 + dy ** 2)
 
-    dx /= length
-    dy /= length
+    dx = dx/length if length != 0 else 0
+    dy = dy/length if length != 0 else 0
 
     px = 0.5 * thickness * -dy
     py = 0.5 * thickness * dx
