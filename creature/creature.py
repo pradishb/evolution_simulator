@@ -1,5 +1,5 @@
 "Module to generate random connected graphs"
-from random import choice, randint
+from random import choice, randint, sample
 
 import cv2
 import numpy as np
@@ -24,10 +24,11 @@ def create_edges(n):
 
 def create_vertices(n, size):
     "Generation of random vertices"
-    vertices = []
-    for _ in range(n):
-        vertices.append((randint(0, size), randint(0, size)))
-    return vertices
+    vertices = set()
+    for y in range(size):
+        for x in range(size):
+            vertices.add((y, x))
+    return sample(vertices, n)
 
 
 def resize_vertices(vertices, scale):
