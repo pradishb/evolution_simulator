@@ -1,6 +1,7 @@
 from framework.framework import (Framework, main)
 from Box2D import (b2EdgeShape, b2FixtureDef, b2PolygonShape)
 from maths.maths import line_to_rectangle
+from creature.creature import create_edges, create_vertices, find_adjacent_edges
 
 
 THICKNESS = 0.5
@@ -16,18 +17,15 @@ class BodyTypes(Framework):
 
         # The ground
         _ = self.world.CreateBody(
-            shapes=b2EdgeShape(vertices=[(-50, 0), (50, 0)])
+            shapes=b2EdgeShape(vertices=[(-500, 0), (500, 0)])
         )
 
-        vertices = [
-            [(5, 5), (10, 10)],
-            [(10, 10), (15, 5)],
-            [(10, 10), (5, 5)],
-        ]
+        vertices = create_vertices(3, 10)
+        edges = create_edges(3)
+        body = {}
 
-        body = []
-
-        for vertex in vertices:
+        for edge in edges:
+            vertex = vertices[edge[0]], vertices[edge[1]]
             point = line_to_rectangle(*vertex, THICKNESS)
 
             fixture = b2FixtureDef(
@@ -36,27 +34,24 @@ class BodyTypes(Framework):
                 friction=0.6,
             )
 
-            body.append(
-                self.world.CreateDynamicBody(
-                    fixtures=fixture,
-                )
+            body[edge] = self.world.CreateDynamicBody(
+                fixtures=fixture,
             )
 
-        # self.world.CreateRevoluteJoint(
-        #     bodyA=body[0],
-        #     bodyB=body[1],
-        #     anchor=(10, 10),
-        #     collideConnected=False,
-        #     motorSpeed=300,
-        #     maxMotorTorque=300,
-        #     enableMotor=True,
-        # )
-
-        # self.world.CreateRevoluteJoint(
-        #     bodyA=body[0],
-        #     bodyB=body[2],
-        #     anchor=(5, 5)
-        # )
+        for edge in edges:
+            adjacent = find_adjacent_edges(edge, edges)
+            for a_edge in adjacent:
+                anchor = vertices[edge[0]]
+                print("connectiong", edge, a_edge, "at", anchor)
+                self.world.CreateRevoluteJoint(
+                    bodyA=body[edge],
+                    bodyB=body[a_edge],
+                    anchor=anchor,
+                    collideConnected=True,
+                    motorSpeed=100,
+                    maxMotorTorque=1000,
+                    enableMotor=True,
+                )
 
 
 if __name__ == "__main__":
