@@ -1,4 +1,6 @@
+"Environment Module"
 from glob import glob
+from random import randint
 
 import numpy as np
 
@@ -12,24 +14,35 @@ THICKNESS = 0.5
 
 
 class Environment(Framework):
+    "Environment class"
     name = "Evolution Simulator"
-    description = "Evolution Simulator"
+
     speed = 1000  # platform speed
 
     def __init__(self):
         super(Environment, self).__init__()
+        self.settings.drawJoints = False
 
-        # The ground
+        edges = None
+        vertices = None
+
+        if self.settings.creatureId == -1:
+            self.settings.creatureId = len(glob("data/vertices/*.npy"))
+            n = randint(3, 8)
+            vertices = create_vertices(n, 10)
+            edges = create_edges(n)
+            np.save("data/vertices/%d" % self.settings.creatureId, vertices)
+            np.save("data/edges/%d" % self.settings.creatureId, edges)
+        else:
+            vertices = np.load(
+                "data/vertices/%d.npy" % self.settings.creatureId)
+            edges = np.load("data/edges/%d.npy" % self.settings.creatureId)
+
+        Environment.description = "Creature #%d" % self.settings.creatureId
+
         _ = self.world.CreateBody(
             shapes=b2EdgeShape(vertices=[(-500, 0), (500, 0)])
         )
-
-        vertices = create_vertices(10, 10)
-        edges = create_edges(10)
-
-        my_id = len(glob("data/vertices/*.npy"))
-        np.save("data/vertices/%d" % my_id, vertices)
-        np.save("data/edges/%d" % my_id, vertices)
 
         body = {}
 
@@ -44,18 +57,19 @@ class Environment(Framework):
             )
             fixture.filter.groupIndex = -1
 
-            body[edge] = self.world.CreateDynamicBody(
+            body[tuple(edge)] = self.world.CreateDynamicBody(
                 fixtures=fixture,
             )
+        print(len(body))
 
         for edge in edges:
             adjacent = find_adjacent_edges(edge, edges)
             for a_edge in adjacent:
-                anchor = vertices[edge[0]]
+                anchor = int(vertices[edge[0]][0]), int(vertices[edge[0]][1])
                 print("connectiong", edge, a_edge, "at", anchor)
                 self.world.CreateRevoluteJoint(
-                    bodyA=body[edge],
-                    bodyB=body[a_edge],
+                    bodyA=body[tuple(edge)],
+                    bodyB=body[tuple(a_edge)],
                     anchor=anchor,
                     collideConnected=True,
                     motorSpeed=100,

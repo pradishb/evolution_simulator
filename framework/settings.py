@@ -21,9 +21,13 @@
 # 3. This notice may not be removed or altered from any source distribution.
 
 
+from optparse import OptionParser
+
+
 class fwSettings(object):
     # The default backend to use in (can be: pyglet, pygame, etc.)
     backend = 'pygame'
+    creatureId = -1
 
     # Physics options
     hz = 60.0
@@ -57,6 +61,7 @@ class fwSettings(object):
     # testing)
     onlyInit = False
 
+
 #             text                  variable
 checkboxes = (("Warm Starting", "enableWarmStarting"),
               ("Time of Impact", "enableContinuous"),
@@ -81,7 +86,6 @@ sliders = [
     {'name': 'velocityIterations', 'text': 'Vel Iters', 'min': 1, 'max': 500},
 ]
 
-from optparse import OptionParser
 
 parser = OptionParser()
 list_options = [i for i in dir(fwSettings)
@@ -92,7 +96,8 @@ for opt_name in list_options:
     if isinstance(value, bool):
         if value:
             parser.add_option('', '--no-' + opt_name, dest=opt_name,
-                              default=value, action='store_' + str(not value).lower(),
+                              default=value, action='store_' +
+                                  str(not value).lower(),
                               help="don't " + opt_name)
         else:
             parser.add_option('', '--' + opt_name, dest=opt_name, default=value,

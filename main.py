@@ -1,10 +1,11 @@
+"Main module"
 import os
-from glob import glob
-from framework.framework import main
 from environment.environment import Environment
+from framework.framework import main
 
 
 def create_directories():
+    "Creates necesesary directories"
     if not os.path.exists("data"):
         os.makedirs("data")
     if not os.path.exists("data/vertices"):

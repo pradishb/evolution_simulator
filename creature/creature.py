@@ -42,7 +42,7 @@ def find_adjacent_edges(my_edge, edges):
     "Finds the adjacent edges of an edge"
     adjacent = []
     for edge in edges:
-        if edge == my_edge:
+        if tuple(edge) == tuple(my_edge):
             continue
         if my_edge[0] in edge:
             adjacent.append(edge)
