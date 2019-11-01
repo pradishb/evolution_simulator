@@ -8,7 +8,7 @@ class TestCases(unittest.TestCase):
 
     def test_creature_creation(self):
         n = 5
-        for _ in range(10):
+        for _ in range(100):
             vertices = create_vertices(n, 10)
             edges = create_edges(n)
             draw_creature(vertices, edges, 10, 50)
