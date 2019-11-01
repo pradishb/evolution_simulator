@@ -30,8 +30,11 @@ def get_position_of_creature(bodies):
     ''' Give the maxmium displacement of the given creature'''
     temp_data_x = []
     for body in bodies:
-        temp_data_x.append(body.worldCenter.x)
-    return np.amax(temp_data_x)
+        if body.worldCenter.x != 0:
+            temp_data_x.append(body.worldCenter.x)
+    if temp_data_x:
+        return np.amax(temp_data_x)
+    return 0
 
 def get_fitness(bodies, starting_position):
     ''' returns fitness of the creature'''
