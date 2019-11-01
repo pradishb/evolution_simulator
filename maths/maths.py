@@ -1,5 +1,5 @@
 from math import sqrt
-
+import numpy as np
 
 def line_to_rectangle(p1, p2, thickness):
     x1, y1 = p1
@@ -25,3 +25,15 @@ def line_to_rectangle(p1, p2, thickness):
         (x2 - px + ux, y2 - py + uy),
         (x1 - px - ux, y1 - py - uy),
     ]
+
+def get_position_of_creature(bodies):
+    ''' Give the maxmium displacement of the given creature'''
+    temp_data_x = []
+    for body in bodies:
+        temp_data_x.append(body.worldCenter.x)
+    return np.amax(temp_data_x)
+
+def get_fitness(bodies, starting_position):
+    ''' returns fitness of the creature'''
+    fitness = get_position_of_creature(bodies) - starting_position
+    return fitness

@@ -12,6 +12,7 @@ from Box2D import (b2_addState, b2_dynamicBody, b2_epsilon, b2_persistState)
 
 from .settings import fwSettings
 
+from maths.maths import get_position_of_creature
 
 class fwDestructionListener(b2DestructionListener):
     """
@@ -71,6 +72,8 @@ class FrameworkBase(b2ContactListener):
     """
     name = "None"
     description = None
+    fitness = None
+    starting_position = None
     TEXTLINE_START = 30
     colors = {
         'mouse_point': b2Color(0, 1, 0),
@@ -124,6 +127,8 @@ class FrameworkBase(b2ContactListener):
         Takes care of physics drawing (callbacks are executed after the world.Step() )
         and drawing additional information.
         """
+        fitness = get_position_of_creature(self.world.bodies)
+        self.Print("Fitness  : "+str(fitness), (225, 225, 225, 225))
 
         self.stepCount += 1
         # Don't do anything if the setting's Hz are <= 0

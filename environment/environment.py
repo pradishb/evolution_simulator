@@ -5,11 +5,11 @@ from random import randint
 import numpy as np
 
 from Box2D import b2EdgeShape, b2FixtureDef, b2PolygonShape
-from creature.creature import (create_edges, create_vertices,
+from creature import (create_edges, create_vertices,
                                find_adjacent_edges)
 from framework.framework import Framework
 from maths.maths import line_to_rectangle
-
+from maths.maths import get_position_of_creature
 THICKNESS = 0.5
 
 
@@ -28,7 +28,7 @@ class Environment(Framework):
 
         if self.settings.creatureId == -1:
             self.settings.creatureId = len(glob("data/vertices/*.npy"))
-            n = randint(3, 8)
+            n = 3
             vertices = create_vertices(n, 10)
             edges = create_edges(n)
             np.save("data/vertices/%d" % self.settings.creatureId, vertices)
@@ -56,7 +56,6 @@ class Environment(Framework):
                 friction=0.6,
             )
             fixture.filter.groupIndex = -1
-
             body[tuple(edge)] = self.world.CreateDynamicBody(
                 fixtures=fixture,
             )
@@ -76,3 +75,6 @@ class Environment(Framework):
                     maxMotorTorque=250,
                     enableMotor=True,
                 )
+
+        Environment.starting_position = get_position_of_creature(body.values())
+    
