@@ -1,17 +1,22 @@
 "Module to generate random connected graphs"
 from random import choice, randint, sample
-from dataclasses import dataclass
-
 import cv2
 import numpy as np
 
 
-def create_edges(n):
-    "Generation of random graph"
+def get_all_possible_edges(n):
+    ''' Returns all the possible edges for a given number of vertices '''
     all_edges = set()
     for vertex_a in range(n):
         for vertex_b in range(vertex_a+1, n):
             all_edges.add((vertex_a, vertex_b))
+    return all_edges
+
+
+def create_edges(n):
+    "Generation of random graph"
+    all_edges = get_all_possible_edges(n)
+
     edges = set(
         filter(lambda edge: edge[0] + 1 == edge[1], all_edges))
 
@@ -51,32 +56,33 @@ def find_adjacent_edges(my_edge, edges):
     return adjacent
 
 
-def draw_creature(vertices, edges, size, scale):
-    "Draws connected graph using vertices and edges"
-    padding = 50
-    paper = np.ones((scale*size, scale*size, 3)).astype(np.uint8) * 255
-    vertices = resize_vertices(vertices, scale)
-
-    for edge in edges:
-        start, end = vertices[edge[0]], vertices[edge[1]]
-        cv2.line(paper, start, end, (0, 0, 255), 5)
-    for vertex in vertices:
-        cv2.circle(paper, vertex, 10, (255, 0, 0), -1)
-    border = cv2.copyMakeBorder(
-        paper,
-        top=padding,
-        bottom=padding,
-        left=padding,
-        right=padding, borderType=cv2.BORDER_CONSTANT, value=[255, 255, 255])
-    cv2.imshow("", border)
-    cv2.waitKey()
-
-
-@dataclass
 class Creature:
     ''' Saves the data of a creature '''
 
-    def __init__(self, n):
+    def __init__(self, n, size=10):
         self.n = n
-        self.vertices = create_vertices(n, 10)
+        self.size = size
+        self.vertices = create_vertices(n, size)
         self.edges = create_edges(n)
+
+    def draw_creature(self, scale=50):
+        "Draws connected graph using vertices and edges"
+
+        vertices, edges = self.vertices, self.edges
+        padding = 50
+        paper = np.ones((scale*self.size, scale*self.size, 3)).astype(np.uint8) * 255
+        vertices = resize_vertices(vertices, scale)
+
+        for edge in edges:
+            start, end = vertices[edge[0]], vertices[edge[1]]
+            cv2.line(paper, start, end, (0, 0, 255), 5)
+        for vertex in vertices:
+            cv2.circle(paper, vertex, 10, (255, 0, 0), -1)
+        border = cv2.copyMakeBorder(
+            paper,
+            top=padding,
+            bottom=padding,
+            left=padding,
+            right=padding, borderType=cv2.BORDER_CONSTANT, value=[255, 255, 255])
+        cv2.imshow("", border)
+        cv2.waitKey()

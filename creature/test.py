@@ -1,6 +1,6 @@
 "Module to perform unittest"
 import unittest
-from . import create_vertices, create_edges, draw_creature
+from . import Creature
 
 
 class TestCases(unittest.TestCase):
@@ -9,9 +9,8 @@ class TestCases(unittest.TestCase):
     def test_creature_creation(self):
         n = 5
         for _ in range(100):
-            vertices = create_vertices(n, 10)
-            edges = create_edges(n)
-            draw_creature(vertices, edges, 10, 50)
+            creature = Creature(n)
+            creature.draw_creature()
 
 
 if __name__ == "__main__":
