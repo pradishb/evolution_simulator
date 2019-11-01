@@ -33,7 +33,7 @@
         <property name="text" translatable="yes">Sort</property>
         <layout>
           <property name="column">2</property>
-          <property name="propagate">True</property>
+          <property name="propagate">False</property>
           <property name="row">0</property>
         </layout>
       </object>
@@ -79,12 +79,22 @@
       </object>
     </child>
     <child>
+      <object class="tk.Button" id="show_analytics">
+        <property name="text" translatable="yes">Show analytics</property>
+        <layout>
+          <property name="column">7</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
       <object class="ttk.Progressbar" id="progress">
         <property name="length">700</property>
         <property name="orient">horizontal</property>
         <layout>
           <property name="column">0</property>
-          <property name="columnspan">7</property>
+          <property name="columnspan">8</property>
           <property name="propagate">True</property>
           <property name="row">1</property>
         </layout>
@@ -98,7 +108,7 @@
         <property name="width">700</property>
         <layout>
           <property name="column">0</property>
-          <property name="columnspan">7</property>
+          <property name="columnspan">8</property>
           <property name="propagate">False</property>
           <property name="row">2</property>
         </layout>
@@ -122,9 +132,9 @@
         <property name="width">680</property>
         <layout>
           <property name="column">0</property>
-          <property name="columnspan">7</property>
+          <property name="columnspan">8</property>
           <property name="propagate">True</property>
-          <property name="row">3</property>
+          <property name="row">5</property>
           <property name="sticky">nsew</property>
         </layout>
       </object>
