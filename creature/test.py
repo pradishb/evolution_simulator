@@ -1,6 +1,6 @@
 "Module to perform unittest"
 import unittest
-from .creature import create_vertices, create_edges, draw_creature
+from . import create_vertices, create_edges, draw_creature
 
 
 class TestCases(unittest.TestCase):
