@@ -65,24 +65,33 @@ class Creature:
         self.vertices = create_vertices(n, size)
         self.edges = create_edges(n)
 
-    def draw_creature(self, scale=50):
-        "Draws connected graph using vertices and edges"
-
+    def get_image(self, scale=50):
+        ''' Returns a cv2 image representation of the creature '''
         vertices, edges = self.vertices, self.edges
-        padding = 50
+        padding = scale
         paper = np.ones((scale*self.size, scale*self.size, 3)).astype(np.uint8) * 255
-        vertices = resize_vertices(vertices, scale)
-
-        for edge in edges:
-            start, end = vertices[edge[0]], vertices[edge[1]]
-            cv2.line(paper, start, end, (0, 0, 255), 5)
-        for vertex in vertices:
-            cv2.circle(paper, vertex, 10, (255, 0, 0), -1)
-        border = cv2.copyMakeBorder(
+        paper = cv2.copyMakeBorder(
             paper,
             top=padding,
             bottom=padding,
             left=padding,
             right=padding, borderType=cv2.BORDER_CONSTANT, value=[255, 255, 255])
-        cv2.imshow("", border)
+        vertices = resize_vertices(vertices, scale)
+
+        padded_vertices = []
+        for vertex in vertices:
+            vertex = tuple([x + padding for x in vertex])
+            padded_vertices.append(vertex)
+
+        for edge in edges:
+            start, end = padded_vertices[edge[0]], padded_vertices[edge[1]]
+            cv2.line(paper, start, end, (0, 0, 255), scale//10+1)
+        for vertex in padded_vertices:
+            cv2.circle(paper, vertex, scale//5, (255, 0, 0), -1)
+
+        return paper
+
+    def draw_creature(self, scale=50):
+        "Draws connected graph using vertices and edges"
+        cv2.imshow("", self.get_image(scale))
         cv2.waitKey()
