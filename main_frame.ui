@@ -59,12 +59,32 @@
       </object>
     </child>
     <child>
+      <object class="tk.Button" id="save">
+        <property name="text" translatable="yes">Save</property>
+        <layout>
+          <property name="column">5</property>
+          <property name="propagate">False</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Button" id="load">
+        <property name="text" translatable="yes">Load</property>
+        <layout>
+          <property name="column">6</property>
+          <property name="propagate">False</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
       <object class="ttk.Progressbar" id="progress">
         <property name="length">700</property>
         <property name="orient">horizontal</property>
         <layout>
           <property name="column">0</property>
-          <property name="columnspan">5</property>
+          <property name="columnspan">7</property>
           <property name="propagate">True</property>
           <property name="row">1</property>
         </layout>
@@ -78,7 +98,7 @@
         <property name="width">700</property>
         <layout>
           <property name="column">0</property>
-          <property name="columnspan">5</property>
+          <property name="columnspan">7</property>
           <property name="propagate">False</property>
           <property name="row">2</property>
         </layout>
@@ -99,10 +119,10 @@
         <property name="height">600</property>
         <property name="scrolltype">both</property>
         <property name="usemousewheel">false</property>
-        <property name="width">700</property>
+        <property name="width">680</property>
         <layout>
           <property name="column">0</property>
-          <property name="columnspan">5</property>
+          <property name="columnspan">7</property>
           <property name="propagate">True</property>
           <property name="row">3</property>
           <property name="sticky">nsew</property>
