@@ -1,7 +1,8 @@
-"Main module"
+''' Main script of the program '''
+import tkinter as tk
 import os
-from environment.environment import Environment
-from framework.framework import main
+
+from gui import Gui
 
 
 def create_directories():
@@ -14,6 +15,20 @@ def create_directories():
         os.makedirs("data/edges")
 
 
-if __name__ == "__main__":
-    create_directories()
-    main(Environment)
+class Application(Gui):
+    ''' Main gui class '''
+
+    def __init__(self, master):
+        Gui.__init__(self, master, 'Evolution Simulator')
+        create_directories()
+
+
+def main():
+    ''' Main function of the script '''
+    root = tk.Tk()
+    Application(root)
+    root.mainloop()
+
+
+if __name__ == '__main__':
+    main()
