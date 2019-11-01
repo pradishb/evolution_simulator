@@ -1,5 +1,6 @@
 "Module to generate random connected graphs"
 from random import choice, randint, sample
+from dataclasses import dataclass
 
 import cv2
 import numpy as np
@@ -69,3 +70,13 @@ def draw_creature(vertices, edges, size, scale):
         right=padding, borderType=cv2.BORDER_CONSTANT, value=[255, 255, 255])
     cv2.imshow("", border)
     cv2.waitKey()
+
+
+@dataclass
+class Creature:
+    ''' Saves the data of a creature '''
+
+    def __init__(self, n):
+        self.n = n
+        self.vertices = create_vertices(n, 10)
+        self.edges = create_edges(n)
