@@ -3,7 +3,7 @@ The framework's base is FrameworkBase. See its help for more information.
 """
 from . import backends
 from time import time
-
+import pygame
 from Box2D import (b2World, b2AABB, b2CircleShape, b2Color, b2Vec2)
 from Box2D import (b2ContactListener, b2DestructionListener, b2DrawExtended)
 from Box2D import (b2Fixture, b2FixtureDef, b2Joint)
@@ -501,6 +501,7 @@ def main(test_class, *args):
         return
     test.run()
     fitness = get_fitness(test.world.bodies, test.starting_position)
+    pygame.quit()
     return fitness
 
 
