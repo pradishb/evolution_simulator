@@ -11,8 +11,8 @@ from Box2D import (b2GetPointStates, b2QueryCallback, b2Random)
 from Box2D import (b2_addState, b2_dynamicBody, b2_epsilon, b2_persistState)
 
 from .settings import fwSettings
-
-from maths.maths import get_position_of_creature
+import numpy as np
+from maths.maths import get_position_of_creature, get_fitness
 
 class fwDestructionListener(b2DestructionListener):
     """
@@ -127,8 +127,9 @@ class FrameworkBase(b2ContactListener):
         Takes care of physics drawing (callbacks are executed after the world.Step() )
         and drawing additional information.
         """
-        fitness = get_position_of_creature(self.world.bodies)
-        self.Print("Fitness  : "+str(fitness), (225, 225, 225, 225))
+        if self.renderer:
+            fitness = get_fitness(self.world.bodies, self.starting_position)
+            self.Print("Fitness  : "+str(fitness), (225, 225, 225, 225))
 
         self.stepCount += 1
         # Don't do anything if the setting's Hz are <= 0
@@ -500,6 +501,8 @@ def main(test_class):
     if fwSettings.onlyInit:
         return
     test.run()
+    fitness = get_fitness(test.world.bodies, test.starting_position)
+    np.save("data/fitness/%d" % test.settings.creatureId, fitness)
 
 
 if __name__ == '__main__':
