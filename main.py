@@ -1,10 +1,11 @@
 ''' Main script of the program '''
 import tkinter as tk
+import threading
 import os
 
 from PIL import Image, ImageTk
 
-from gui import Gui, ContextMenu
+from gui import Gui, ContextMenu, ScrollFrame
 from environment import Environment
 from framework.framework import main as framework
 from creature import Creature
@@ -29,19 +30,32 @@ class Application(Gui):
 
     def __init__(self, master):
         Gui.__init__(self, master, 'Evolution Simulator')
-        create_directories()
+        self.builder.get_object('find_fitness')['state'] = 'disabled'
+        self.builder.get_object('sort')['state'] = 'disabled'
+        self.builder.get_object('do_selection')['state'] = 'disabled'
+        self.builder.get_object('reproduce')['state'] = 'disabled'
+        self.builder.get_object('save')['state'] = 'disabled'
+        self.creatures = []
 
-        creatures = []
+        self.scroll_frame = ScrollFrame(self.builder.get_object('creatures_frame'))
+        self.scroll_frame.grid(sticky='nsew')
 
+    def create(self):
+        ''' Create button callback '''
+        threading.Thread(target=self.threaded_create, daemon=True).start()
+
+    def threaded_create(self):
+        ''' Creates an initial population of creatures '''
+        self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('create')['state'] = 'disabled'
         for i in range(POPULATION_SIZE):
-            creatures.append(Creature(5))
-
-        for i, creature in enumerate(creatures):
+            creature = Creature(5)
+            self.creatures.append(creature)
             image = creature.get_image(5)
             pillow_image = Image.fromarray(image)
             imgtk = ImageTk.PhotoImage(image=pillow_image)
 
-            frame = tk.Frame(self.builder.get_object('creatures'))
+            frame = tk.Frame(self.scroll_frame.view_port)
             frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
             panel = tk.Label(frame)
             description = tk.Label(
@@ -59,8 +73,13 @@ class Application(Gui):
             panel.imgtk = imgtk
             panel.config(image=imgtk)
 
+            progress = i * 100 // POPULATION_SIZE
+            self.builder.get_object('progress')['value'] = progress
+        self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('find_fitness')['state'] = 'active'
+
     def test_fitness(self, creature: Creature):
-        fitness = framework(Environment, False, creature)
+        fitness = framework(Environment, True, creature)
         print(fitness)
 
 
@@ -72,4 +91,5 @@ def main():
 
 
 if __name__ == '__main__':
+    create_directories()
     main()
