@@ -14,6 +14,7 @@ from .settings import fwSettings
 import numpy as np
 from maths.maths import get_position_of_creature, get_fitness
 
+
 class fwDestructionListener(b2DestructionListener):
     """
     The destruction listener callback:
@@ -490,17 +491,17 @@ class FrameworkBase(b2ContactListener):
         pass
 
 
-def main(test_class):
+def main(test_class, *args):
     """
     Loads the test class and executes it.
     """
     print("Loading %s..." % test_class.name)
-    test = test_class()
+    test = test_class(*args)
     if fwSettings.onlyInit:
         return
     test.run()
     fitness = get_fitness(test.world.bodies, test.starting_position)
-    np.save("data/fitness/%d" % test.settings.creatureId, fitness)
+    return fitness
 
 
 if __name__ == '__main__':
