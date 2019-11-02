@@ -76,6 +76,7 @@ class FrameworkBase(b2ContactListener):
     fitness = None
     starting_position = None
     time_limit = None
+    render = None
     start_time = None
     TEXTLINE_START = 30
     colors = {
@@ -109,7 +110,6 @@ class FrameworkBase(b2ContactListener):
 
     def __init__(self):
         super(FrameworkBase, self).__init__()
-
         self.__reset()
 
         # Box2D Initialization
@@ -137,7 +137,7 @@ class FrameworkBase(b2ContactListener):
         else:
             timeStep = 0.0
 
-        if self.settings.render:
+        if self.render:
             fitness = get_fitness(self.world.bodies, self.starting_position)
             self.Print("Fitness  : "+str(fitness), (225, 225, 225, 225))
             renderer = self.renderer
@@ -405,6 +405,7 @@ class FrameworkBase(b2ContactListener):
 
         if time() > self.start_time + self.time_limit:
             return True
+
     def ConvertScreenToWorld(self, x, y):
         """
         Return a b2Vec2 in world coordinates of the passed in screen
@@ -495,7 +496,7 @@ class FrameworkBase(b2ContactListener):
         pass
 
 
-def main(test_class, *args):
+def main(test_class, render, *args):
     """
     Loads the test class and executes it.
     """
@@ -504,6 +505,7 @@ def main(test_class, *args):
     if fwSettings.onlyInit:
         return
     test.start_time = time()
+    test.render = render
     test.run()
     fitness = get_fitness(test.world.bodies, test.starting_position)
     pygame.quit()

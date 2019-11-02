@@ -60,7 +60,7 @@ class Application(Gui):
             panel.config(image=imgtk)
 
     def test_fitness(self, creature: Creature):
-        fitness = framework(Environment, creature)
+        fitness = framework(Environment, False, creature)
         print(fitness)
 
 

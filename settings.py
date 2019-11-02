@@ -8,7 +8,7 @@ MAX_EDGE_CHANGE_COUNT = 3
 # Training
 POPULATION_SIZE = 10
 
-RENDER = True
+RENDER = False
 
 #time limit in seconds
 TIME_LIMIT = 5
