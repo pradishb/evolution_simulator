@@ -137,7 +137,10 @@ class FrameworkBase(b2ContactListener):
         else:
             timeStep = 0.0
 
-        renderer = self.renderer
+        if self.settings.render:
+            renderer = self.renderer
+        else:
+            renderer = None
 
         # If paused, display so
         if settings.pause:

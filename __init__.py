@@ -1,0 +1,1 @@
+#for importing settings.py to other packages

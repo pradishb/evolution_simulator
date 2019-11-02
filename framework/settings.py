@@ -42,10 +42,10 @@ class fwSettings(object):
     drawStats = True
     drawShapes = True
     drawJoints = True
-    drawCoreShapes = False
+    drawCoreShapes = True
     drawAABBs = False
     drawOBBs = False
-    drawPairs = False
+    drawPairs = True
     drawContactPoints = False
     maxContactPoints = 100
     drawContactNormals = False

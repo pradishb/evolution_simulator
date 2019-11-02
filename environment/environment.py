@@ -1,4 +1,6 @@
 "Environment Module"
+from settings import RENDER
+
 from glob import glob
 from random import randint
 
@@ -12,7 +14,6 @@ from maths.maths import line_to_rectangle
 from maths.maths import get_position_of_creature
 THICKNESS = 0.5
 
-
 class Environment(Framework):
     "Environment class"
     name = "Evolution Simulator"
@@ -22,7 +23,7 @@ class Environment(Framework):
     def __init__(self):
         super(Environment, self).__init__()
         self.settings.drawJoints = False
-
+        self.settings.render = RENDER
         edges = None
         vertices = None
 
