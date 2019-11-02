@@ -368,8 +368,9 @@ class PygameFramework(FrameworkBase):
             self.CheckKeys()
 
             # Run the simulation loop
-            self.SimulationLoop()
-
+            stop = self.SimulationLoop()
+            if stop:
+                break
             if GUIEnabled and self.settings.drawMenu:
                 self.gui_app.paint(self.screen)
 

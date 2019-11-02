@@ -1,8 +1,7 @@
 "Environment Module"
 from Box2D import b2EdgeShape, b2FixtureDef, b2PolygonShape
 
-
-from settings import RENDER
+from settings import RENDER, TIME_LIMIT
 from creature import Creature, find_adjacent_edges
 from framework.framework import Framework
 from maths.maths import line_to_rectangle
@@ -57,5 +56,5 @@ class Environment(Framework):
                     maxMotorTorque=250,
                     enableMotor=True,
                 )
-
+        Environment.time_limit = TIME_LIMIT
         Environment.starting_position = get_position_of_creature(body.values())

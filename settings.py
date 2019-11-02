@@ -9,3 +9,6 @@ MAX_EDGE_CHANGE_COUNT = 3
 POPULATION_SIZE = 10
 
 RENDER = True
+
+#time limit in seconds
+TIME_LIMIT = 5

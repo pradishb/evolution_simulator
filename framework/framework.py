@@ -75,6 +75,8 @@ class FrameworkBase(b2ContactListener):
     description = None
     fitness = None
     starting_position = None
+    time_limit = None
+    start_time = None
     TEXTLINE_START = 30
     colors = {
         'mouse_point': b2Color(0, 1, 0),
@@ -127,7 +129,7 @@ class FrameworkBase(b2ContactListener):
 
         Takes care of physics drawing (callbacks are executed after the world.Step() )
         and drawing additional information.
-        """
+        """        
         self.stepCount += 1
         # Don't do anything if the setting's Hz are <= 0
         if settings.hz > 0.0:
@@ -200,6 +202,7 @@ class FrameworkBase(b2ContactListener):
         if renderer:
             # If there's a mouse joint, draw the connection between the object
             # and the current pointer position.
+
             if self.mouseJoint:
                 p1 = renderer.to_screen(self.mouseJoint.anchorB)
                 p2 = renderer.to_screen(self.mouseJoint.target)
@@ -386,7 +389,6 @@ class FrameworkBase(b2ContactListener):
         """
         The main simulation loop. Don't override this, override Step instead.
         """
-
         # Reset the text line to start the text from the top
         self.textLine = self.TEXTLINE_START
 
@@ -401,6 +403,8 @@ class FrameworkBase(b2ContactListener):
         # Do the main physics step
         self.Step(self.settings)
 
+        if time() > self.start_time + self.time_limit:
+            return True
     def ConvertScreenToWorld(self, x, y):
         """
         Return a b2Vec2 in world coordinates of the passed in screen
@@ -499,6 +503,7 @@ def main(test_class, *args):
     test = test_class(*args)
     if fwSettings.onlyInit:
         return
+    test.start_time = time()
     test.run()
     fitness = get_fitness(test.world.bodies, test.starting_position)
     pygame.quit()
