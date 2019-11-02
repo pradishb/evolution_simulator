@@ -1,30 +1,21 @@
-"""
-==========
-Histograms
-==========
-
-Demonstrates how to plot histograms with matplotlib.
-"""
-
+"Histogram"
 import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib import colors
-from matplotlib.ticker import PercentFormatter
+# import numpy as np
+# from matplotlib import colors
+# from matplotlib.ticker import PercentFormatter
 
-# Fixing random state for reproducibility
-np.random.seed(100)
+plt.style.use('fivethirtyeight')
 
-N_points = 1000
-n_bins = 5
+x = [0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6, 6, 6, 7, 7, 7, 7, 8, 9, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11]
+plt.hist(x, bins=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], edgecolor='black')
+plt.ylim((0, 10)) #sets y limits
 
-# Generate a normal distribution, center at x=0 and y=5
-x = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
-#y = [10.0, 6.0, 7.0, 8.0, 9.0]
+MEDIAN = (max(x)+1)/2
+plt.axvline(MEDIAN, color='r', label='Median')
+plt.legend(loc='best')
 
-fig, axs = plt.subplots(1, 2, sharey=False, tight_layout=True)
+plt.xlabel('Fitness Value')
+plt.ylabel('Number of species')
 
-# We can set the number of bins with the `bins` kwarg
-axs[0].hist(x, bins=n_bins)
-#axs[1].hist(y, bins=n_bins)
-
+# plt.tight_layout()
 plt.show()
