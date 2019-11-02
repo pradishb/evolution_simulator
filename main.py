@@ -5,6 +5,8 @@ import os
 from PIL import Image, ImageTk
 
 from gui import Gui, ContextMenu
+from environment import Environment
+from framework.framework import main as framework
 from creature import Creature
 from settings import POPULATION_SIZE
 
@@ -58,7 +60,8 @@ class Application(Gui):
             panel.config(image=imgtk)
 
     def test_fitness(self, creature: Creature):
-        print(creature.edges)
+        fitness = framework(Environment, creature)
+        print(fitness)
 
 
 def main():

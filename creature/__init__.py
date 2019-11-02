@@ -61,6 +61,7 @@ class Creature:
 
     def __init__(self, n, size=10):
         self.n = n
+        self.identity = 0
         self.size = size
         self.vertices = create_vertices(n, size)
         self.edges = create_edges(n)
