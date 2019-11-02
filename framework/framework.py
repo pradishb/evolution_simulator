@@ -127,10 +127,6 @@ class FrameworkBase(b2ContactListener):
         Takes care of physics drawing (callbacks are executed after the world.Step() )
         and drawing additional information.
         """
-        if self.renderer:
-            fitness = get_fitness(self.world.bodies, self.starting_position)
-            self.Print("Fitness  : "+str(fitness), (225, 225, 225, 225))
-
         self.stepCount += 1
         # Don't do anything if the setting's Hz are <= 0
         if settings.hz > 0.0:
@@ -139,6 +135,8 @@ class FrameworkBase(b2ContactListener):
             timeStep = 0.0
 
         if self.settings.render:
+            fitness = get_fitness(self.world.bodies, self.starting_position)
+            self.Print("Fitness  : "+str(fitness), (225, 225, 225, 225))
             renderer = self.renderer
         else:
             renderer = None
