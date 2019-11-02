@@ -46,7 +46,7 @@ class Application(Gui):
             panel = tk.Label(frame)
             description = tk.Label(
                 frame,
-                text=f'Creature #{i} \n'
+                text=f'Creature #{creature.identity} \n'
                 f'Fitness: {creature.fitness}\n'
                 f'Species: V{len(creature.vertices)}',
                 font=(None, 7))

@@ -42,7 +42,6 @@ class Environment(Framework):
             body[tuple(edge)] = self.world.CreateDynamicBody(
                 fixtures=fixture,
             )
-        print(len(body))
 
         for edge in creature.edges:
             adjacent = find_adjacent_edges(edge, creature.edges)

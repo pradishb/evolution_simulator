@@ -58,14 +58,16 @@ def find_adjacent_edges(my_edge, edges):
 
 class Creature:
     ''' Saves the data of a creature '''
+    count = 0
 
     def __init__(self, n, size=10):
         self.n = n
-        self.identity = 0
+        self.identity = Creature.count + 1
         self.size = size
         self.vertices = create_vertices(n, size)
         self.edges = create_edges(n)
         self.fitness = None
+        Creature.count += 1
 
     def get_image(self, scale=50):
         ''' Returns a cv2 image representation of the creature '''
