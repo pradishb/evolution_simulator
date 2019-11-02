@@ -4,7 +4,7 @@ import os
 
 from PIL import Image, ImageTk
 
-from gui import Gui
+from gui import Gui, ContextMenu
 from creature import Creature
 from settings import POPULATION_SIZE
 
@@ -39,14 +39,26 @@ class Application(Gui):
             pillow_image = Image.fromarray(image)
             imgtk = ImageTk.PhotoImage(image=pillow_image)
 
-            # Put it in the display window
-            panel = tk.Label(self.builder.get_object('creatures'))  # initialize image panel
-            panel.grid(row=i//COL_COUNT, column=i % COL_COUNT)
-            panel.imgtk = imgtk  # anchor imgtk so it does not be deleted by garbage-collector
-            panel.config(image=imgtk)  # show the image
-            # Put it in the display window
-            # tk.Label(self.builder.get_object('creatures'), image=imgtk).pack()
-            # label1 = tk.Label(self.builder.get_object('creatures'), text=str(creature.edges))
+            frame = tk.Frame(self.builder.get_object('creatures'))
+            frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
+            panel = tk.Label(frame)
+            description = tk.Label(
+                frame,
+                text=f'Creature #{i} \n'
+                f'Fitness: {creature.fitness}\n'
+                f'Species: V{len(creature.vertices)}',
+                font=(None, 7))
+            right_click = ContextMenu(self.master, [
+                {'label': 'Test fitness', 'command': lambda c=creature: self.test_fitness(c)},
+                {'label': 'Test reproduce', 'command': self.test_fitness}])
+            panel.bind('<Button-3>', right_click.popup)
+            description.grid(sticky='w')
+            panel.grid()
+            panel.imgtk = imgtk
+            panel.config(image=imgtk)
+
+    def test_fitness(self, creature: Creature):
+        print(creature.edges)
 
 
 def main():

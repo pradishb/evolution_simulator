@@ -64,6 +64,7 @@ class Creature:
         self.size = size
         self.vertices = create_vertices(n, size)
         self.edges = create_edges(n)
+        self.fitness = None
 
     def get_image(self, scale=50):
         ''' Returns a cv2 image representation of the creature '''
@@ -85,10 +86,9 @@ class Creature:
 
         for edge in edges:
             start, end = padded_vertices[edge[0]], padded_vertices[edge[1]]
-            cv2.line(paper, start, end, (0, 0, 255), scale//10+1)
+            cv2.line(paper, start, end, (0, 0, 255), scale//10+1, lineType=cv2.LINE_AA)
         for vertex in padded_vertices:
-            cv2.circle(paper, vertex, scale//5, (255, 0, 0), -1)
-
+            cv2.circle(paper, vertex, scale//2, (255, 0, 0), -1, lineType=cv2.LINE_AA)
         return paper
 
     def draw_creature(self, scale=50):
