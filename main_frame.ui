@@ -20,11 +20,32 @@
       </object>
     </child>
     <child>
+      <object class="tk.Entry" id="generation_count">
+        <property name="text" translatable="yes">1000</property>
+        <property name="width">10</property>
+        <layout>
+          <property name="column">1</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Button" id="do_generation">
+        <property name="text" translatable="yes">Do x generation</property>
+        <layout>
+          <property name="column">2</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
       <object class="tk.Button" id="find_fitness">
         <property name="command">find_fitness</property>
         <property name="text" translatable="yes">Find fitness</property>
         <layout>
-          <property name="column">1</property>
+          <property name="column">3</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
         </layout>
@@ -35,7 +56,7 @@
         <property name="command">sort</property>
         <property name="text" translatable="yes">Sort</property>
         <layout>
-          <property name="column">2</property>
+          <property name="column">4</property>
           <property name="propagate">False</property>
           <property name="row">0</property>
         </layout>
@@ -46,7 +67,7 @@
         <property name="command">do_selection</property>
         <property name="text" translatable="yes">Do selection</property>
         <layout>
-          <property name="column">3</property>
+          <property name="column">5</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
         </layout>
@@ -57,7 +78,7 @@
         <property name="command">reproduce</property>
         <property name="text" translatable="yes">Reproduce</property>
         <layout>
-          <property name="column">4</property>
+          <property name="column">6</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
         </layout>
@@ -68,7 +89,7 @@
         <property name="command">save</property>
         <property name="text" translatable="yes">Save</property>
         <layout>
-          <property name="column">5</property>
+          <property name="column">7</property>
           <property name="propagate">False</property>
           <property name="row">0</property>
         </layout>
@@ -79,7 +100,7 @@
         <property name="command">load</property>
         <property name="text" translatable="yes">Load</property>
         <layout>
-          <property name="column">6</property>
+          <property name="column">8</property>
           <property name="propagate">False</property>
           <property name="row">0</property>
         </layout>
@@ -90,7 +111,7 @@
         <property name="command">show_analytics</property>
         <property name="text" translatable="yes">Show analytics</property>
         <layout>
-          <property name="column">7</property>
+          <property name="column">9</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
         </layout>
@@ -102,7 +123,7 @@
         <property name="orient">horizontal</property>
         <layout>
           <property name="column">0</property>
-          <property name="columnspan">8</property>
+          <property name="columnspan">10</property>
           <property name="propagate">True</property>
           <property name="row">1</property>
         </layout>
@@ -110,19 +131,19 @@
     </child>
     <child>
       <object class="tk.Frame" id="container">
-        <property name="height">450</property>
+        <property name="height">420</property>
         <property name="width">700</property>
         <layout>
           <property name="column">0</property>
-          <property name="columnspan">8</property>
+          <property name="columnspan">10</property>
           <property name="propagate">False</property>
           <property name="row">2</property>
           <property name="sticky">nw</property>
         </layout>
         <child>
-          <object class="tk.LabelFrame" id="details">
+          <object class="tk.LabelFrame" id="details_tab">
             <property name="font">TkDefaultFont</property>
-            <property name="height">450</property>
+            <property name="height">425</property>
             <property name="padx">0</property>
             <property name="text" translatable="yes">Details</property>
             <property name="width">150</property>
@@ -133,7 +154,7 @@
               <property name="sticky">nw</property>
             </layout>
             <child>
-              <object class="tk.Label" id="generation">
+              <object class="tk.Label" id="details">
                 <property name="text" translatable="yes">Generation #1</property>
                 <layout>
                   <property name="column">0</property>
@@ -147,7 +168,7 @@
         </child>
         <child>
           <object class="tk.Frame" id="creatures_frame">
-            <property name="height">450</property>
+            <property name="height">425</property>
             <property name="width">550</property>
             <layout>
               <property name="column">1</property>
