@@ -206,18 +206,21 @@ class Application(Gui):
 
     def threaded_train(self):
         ''' Does training for x generations '''
-        repeat = int(self.builder.get_object('repeat').get())
-        for _ in range(repeat):
-            self.builder.get_object('train')['state'] = 'disabled'
-            self.builder.get_object('find_fitness')['state'] = 'disabled'
+        try:
+            repeat = int(self.builder.get_object('repeat').get())
+            for _ in range(repeat-1):
+                self.builder.get_object('train')['state'] = 'disabled'
+                self.builder.get_object('find_fitness')['state'] = 'disabled'
+                self.threaded_find_fitness(render=False)
+                self.threaded_sort()
+                self.threaded_selection()
+                self.threaded_reproduce()
+
             self.threaded_find_fitness(render=False)
             self.threaded_sort()
-            self.threaded_selection()
-            self.threaded_reproduce()
-
-        self.threaded_find_fitness()
-        self.threaded_sort()
-        self.builder.get_object('do_selection')['state'] = 'active'
+            self.builder.get_object('do_selection')['state'] = 'active'
+        except ValueError:
+            easygui.msgbox('Make sure the value of X is an integer', 'Error')
 
 
 def main():
