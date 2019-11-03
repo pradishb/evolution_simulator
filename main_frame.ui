@@ -109,49 +109,63 @@
       </object>
     </child>
     <child>
-      <object class="tk.LabelFrame" id="details">
-        <property name="font">TkDefaultFont</property>
-        <property name="height">50</property>
-        <property name="text" translatable="yes">Details</property>
+      <object class="tk.Frame" id="container">
+        <property name="height">450</property>
         <property name="width">700</property>
         <layout>
           <property name="column">0</property>
           <property name="columnspan">8</property>
           <property name="propagate">False</property>
           <property name="row">2</property>
+          <property name="sticky">nw</property>
         </layout>
         <child>
-          <object class="tk.Label" id="generation">
-            <property name="text" translatable="yes">Generation #1</property>
+          <object class="tk.LabelFrame" id="details">
+            <property name="font">TkDefaultFont</property>
+            <property name="height">450</property>
+            <property name="padx">0</property>
+            <property name="text" translatable="yes">Details</property>
+            <property name="width">150</property>
             <layout>
               <property name="column">0</property>
-              <property name="propagate">True</property>
+              <property name="propagate">False</property>
               <property name="row">0</property>
+              <property name="sticky">nw</property>
+            </layout>
+            <child>
+              <object class="tk.Label" id="generation">
+                <property name="text" translatable="yes">Generation #1</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">nw</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="creatures_frame">
+            <property name="height">450</property>
+            <property name="width">550</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">False</property>
+              <property name="row">0</property>
+              <rows>
+                <row id="0">
+                  <property name="minsize">450</property>
+                </row>
+              </rows>
+              <columns>
+                <column id="0">
+                  <property name="minsize">550</property>
+                </column>
+              </columns>
             </layout>
           </object>
         </child>
-      </object>
-    </child>
-    <child>
-      <object class="tk.Frame" id="creatures_frame">
-        <property name="height">400</property>
-        <property name="width">700</property>
-        <layout>
-          <property name="column">0</property>
-          <property name="columnspan">8</property>
-          <property name="propagate">False</property>
-          <property name="row">6</property>
-          <rows>
-            <row id="0">
-              <property name="minsize">400</property>
-            </row>
-          </rows>
-          <columns>
-            <column id="0">
-              <property name="minsize">700</property>
-            </column>
-          </columns>
-        </layout>
       </object>
     </child>
   </object>
