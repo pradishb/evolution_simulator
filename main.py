@@ -10,8 +10,9 @@ from PIL import Image, ImageTk
 from gui import Gui, ContextMenu, ScrollFrame
 from environment import Environment
 from framework.framework import main as framework
+from reproduction import reproduce
 from creature import Creature
-from settings import POPULATION_SIZE, SELECTION_SIZE, K_COUNT
+from settings import POPULATION_SIZE, SELECTION_SIZE, OFFSPRINGS_PER_SELECTION_SIZE, K_COUNT
 
 
 def create_directories():
@@ -46,6 +47,24 @@ class Application(Gui):
         for row in range(POPULATION_SIZE//COL_COUNT + 1):
             self.scroll_frame.view_port.rowconfigure(row, minsize=106)
 
+    def create_creature(self, creature, i):
+        ''' Creates a single creature '''
+        self.creatures.append(creature)
+        image = creature.get_image(5)
+        pillow_image = Image.fromarray(image)
+        imgtk = ImageTk.PhotoImage(image=pillow_image)
+        creature.frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
+        creature.set_description()
+        right_click = ContextMenu(self.master, [
+            {'label': 'Test fitness', 'command': lambda c=creature: self.test_fitness(c)},
+            {'label': 'Test reproduce', 'command': self.test_fitness}])
+        creature.description.grid(sticky='w')
+        panel = tk.Label(creature.frame)
+        panel.bind('<Button-3>', right_click.popup)
+        panel.grid()
+        panel.imgtk = imgtk
+        panel.config(image=imgtk)
+
     def create(self):
         ''' Create button callback '''
         threading.Thread(target=self.threaded_create, daemon=True).start()
@@ -62,29 +81,17 @@ class Application(Gui):
         ''' Do selection button callback '''
         threading.Thread(target=self.threaded_selection, daemon=True).start()
 
+    def reproduce(self):
+        ''' Reproduce button callback '''
+        threading.Thread(target=self.threaded_reproduce, daemon=True).start()
+
     def threaded_create(self):
         ''' Creates an initial population of creatures '''
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('create')['state'] = 'disabled'
         for i in range(POPULATION_SIZE):
             creature = Creature(5, self.scroll_frame.view_port)
-            self.creatures.append(creature)
-            image = creature.get_image(5)
-            pillow_image = Image.fromarray(image)
-            imgtk = ImageTk.PhotoImage(image=pillow_image)
-
-            creature.frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
-            creature.set_description()
-            right_click = ContextMenu(self.master, [
-                {'label': 'Test fitness', 'command': lambda c=creature: self.test_fitness(c)},
-                {'label': 'Test reproduce', 'command': self.test_fitness}])
-            creature.description.grid(sticky='w')
-            panel = tk.Label(creature.frame)
-            panel.bind('<Button-3>', right_click.popup)
-            panel.grid()
-            panel.imgtk = imgtk
-            panel.config(image=imgtk)
-
+            self.create_creature(creature, i)
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
         self.builder.get_object('progress')['value'] = 0
@@ -135,11 +142,35 @@ class Application(Gui):
         for i, creature in enumerate(self.creatures):
             if creature not in selected_population:
                 creature.frame.grid_forget()
-                self.creatures.pop(i)
+                self.creatures.remove(creature)
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('reproduce')['state'] = 'active'
+
+    def threaded_reproduce(self):
+        ''' Reproduces the creatures '''
+        self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('reproduce')['state'] = 'disabled'
+
+        # Empty the view port
+        for widget in self.scroll_frame.view_port.winfo_children():
+            widget.grid_forget()
+
+        creatures = copy(self.creatures)
+        total_creatures = len(creatures)
+        print(total_creatures)
+        self.creatures = []
+        k = 0
+        for i, creature in enumerate(creatures):
+            for _ in range(OFFSPRINGS_PER_SELECTION_SIZE):
+                offspring = reproduce(creature)
+                self.create_creature(offspring, k)
+                k += 1
+            progress = i * 100 // total_creatures
+            self.builder.get_object('progress')['value'] = progress
+        self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('find_fitness')['state'] = 'active'
 
     def test_fitness(self, creature: Creature):
         ''' Tests the fitness of a single creature with render on '''
