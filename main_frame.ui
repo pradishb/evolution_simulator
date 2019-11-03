@@ -131,7 +131,7 @@
     </child>
     <child>
       <object class="tk.Frame" id="container">
-        <property name="height">420</property>
+        <property name="height">450</property>
         <property name="width">700</property>
         <layout>
           <property name="column">0</property>
@@ -143,7 +143,7 @@
         <child>
           <object class="tk.LabelFrame" id="details_tab">
             <property name="font">TkDefaultFont</property>
-            <property name="height">425</property>
+            <property name="height">450</property>
             <property name="padx">0</property>
             <property name="text" translatable="yes">Details</property>
             <property name="width">150</property>
@@ -168,7 +168,7 @@
         </child>
         <child>
           <object class="tk.Frame" id="creatures_frame">
-            <property name="height">425</property>
+            <property name="height">450</property>
             <property name="width">550</property>
             <layout>
               <property name="column">1</property>
