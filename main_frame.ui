@@ -21,6 +21,7 @@
     </child>
     <child>
       <object class="tk.Button" id="find_fitness">
+        <property name="command">find_fitness</property>
         <property name="text" translatable="yes">Find fitness</property>
         <layout>
           <property name="column">1</property>
@@ -31,6 +32,7 @@
     </child>
     <child>
       <object class="tk.Button" id="sort">
+        <property name="command">sort</property>
         <property name="text" translatable="yes">Sort</property>
         <layout>
           <property name="column">2</property>
@@ -41,6 +43,7 @@
     </child>
     <child>
       <object class="tk.Button" id="do_selection">
+        <property name="command">do_selection</property>
         <property name="text" translatable="yes">Do selection</property>
         <layout>
           <property name="column">3</property>
@@ -51,6 +54,7 @@
     </child>
     <child>
       <object class="tk.Button" id="reproduce">
+        <property name="command">reproduce</property>
         <property name="text" translatable="yes">Reproduce</property>
         <layout>
           <property name="column">4</property>
@@ -61,6 +65,7 @@
     </child>
     <child>
       <object class="tk.Button" id="save">
+        <property name="command">save</property>
         <property name="text" translatable="yes">Save</property>
         <layout>
           <property name="column">5</property>
@@ -71,6 +76,7 @@
     </child>
     <child>
       <object class="tk.Button" id="load">
+        <property name="command">load</property>
         <property name="text" translatable="yes">Load</property>
         <layout>
           <property name="column">6</property>
@@ -81,6 +87,7 @@
     </child>
     <child>
       <object class="tk.Button" id="show_analytics">
+        <property name="command">show_analytics</property>
         <property name="text" translatable="yes">Show analytics</property>
         <layout>
           <property name="column">7</property>
