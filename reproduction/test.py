@@ -10,7 +10,7 @@ class TestCases(unittest.TestCase):
     def test_reproduction(self):
         ''' Tests the reproduction of a creature '''
         for _ in range(10):
-            creature = Creature(5)
+            creature = Creature(5,None)
             creature.draw_creature()
             offspring = reproduce(creature)
             offspring.draw_creature()
