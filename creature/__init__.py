@@ -71,6 +71,7 @@ class Creature:
         self.fitness = 0.0
 
         # Tkinter GUI
+        self.view_port = view_port
         self.frame = tk.Frame(view_port)
         self.description = tk.Label(self.frame, font=(None, 7), width=10)
 
