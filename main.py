@@ -17,6 +17,8 @@ from settings import (
     POPULATION_SIZE, SELECTION_SIZE, OFFSPRINGS_PER_SELECTION_SIZE, RANDOM_NEW_POPULATION_SIZE,
     MIN_VERTICES_COUNT, MAX_VERTICES_COUNT, K_COUNT)
 
+COL_COUNT = 8
+
 
 def create_directories():
     "Creates necesesary directories"
@@ -28,7 +30,12 @@ def create_directories():
         os.makedirs("data/edges")
 
 
-COL_COUNT = 8
+def test_fitness(creature: Creature):
+    ''' Tests the fitness of a single creature with render on '''
+    fitness = framework(Environment, True, [creature, ])
+    easygui.msgbox(
+        f'Fitness of creature #{creature.identity}: {"{:.2f}".format(fitness[creature.identity])}',
+        'Fitness Test Result')
 
 
 class Application(Gui):
@@ -62,8 +69,8 @@ class Application(Gui):
         creature.frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
         creature.set_description()
         right_click = ContextMenu(self.master, [
-            {'label': 'Test fitness', 'command': lambda c=creature: self.test_fitness(c)},
-            {'label': 'Test reproduce', 'command': self.test_fitness}])
+            {'label': 'Test fitness', 'command': lambda c=creature: test_fitness(c)},
+            {'label': 'Test reproduce', 'command': lambda c=creature: test_fitness(c)}])
         creature.description.grid(sticky='w')
         panel = tk.Label(creature.frame)
         panel.bind('<Button-3>', right_click.popup)
@@ -111,10 +118,9 @@ class Application(Gui):
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('do_generation')['state'] = 'disabled'
         self.builder.get_object('find_fitness')['state'] = 'disabled'
-        fitness_es = framework(Environment, False, self.creatures)
+        fitness_es = framework(Environment, True, self.creatures)
         for i, creature in enumerate(self.creatures):
-            creature.fitness = fitness_es[creature.identity]       # For testing
-            # creature.fitness = framework(Environment, False, creature)
+            creature.fitness = fitness_es[creature.identity]
             creature.set_description()
             creature.description.grid(sticky='w')
             progress = i * 100 // POPULATION_SIZE
@@ -194,13 +200,6 @@ class Application(Gui):
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('do_generation')['state'] = 'active'
         self.builder.get_object('find_fitness')['state'] = 'active'
-
-    def test_fitness(self, creature: Creature):
-        ''' Tests the fitness of a single creature with render on '''
-        fitness = framework(Environment, True, [creature,])
-        easygui.msgbox(
-            f'Fitness of creature #{creature.identity}: {"{:.2f}".format(fitness)}',
-            'Fitness Test Result')
 
 
 def main():
