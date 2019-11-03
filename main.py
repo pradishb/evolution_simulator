@@ -14,7 +14,7 @@ from reproduction import reproduce
 from creature import Creature
 from settings import (
     POPULATION_SIZE, SELECTION_SIZE, OFFSPRINGS_PER_SELECTION_SIZE, RANDOM_NEW_POPULATION_SIZE,
-    K_COUNT)
+    MIN_VERTICES_COUNT, MAX_VERTICES_COUNT, K_COUNT)
 
 
 def create_directories():
@@ -95,7 +95,9 @@ class Application(Gui):
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('create')['state'] = 'disabled'
         for i in range(POPULATION_SIZE):
-            creature = Creature(5, self.scroll_frame.view_port)
+            creature = Creature(
+                random.randint(MIN_VERTICES_COUNT, MAX_VERTICES_COUNT),
+                self.scroll_frame.view_port)
             self.create_creature(creature, i)
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
@@ -133,11 +135,13 @@ class Application(Gui):
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
         self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('save')['state'] = 'active'
         self.builder.get_object('do_selection')['state'] = 'active'
 
     def threaded_selection(self):
         ''' Selects the creatures based on the fitness values '''
         self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('save')['state'] = 'disabled'
         self.builder.get_object('do_selection')['state'] = 'disabled'
 
         selected_population = []
@@ -178,7 +182,9 @@ class Application(Gui):
             self.builder.get_object('progress')['value'] = progress
 
         for i in range(k, k+RANDOM_NEW_POPULATION_SIZE):
-            creature = Creature(5, self.scroll_frame.view_port)
+            creature = Creature(
+                random.randint(MIN_VERTICES_COUNT, MAX_VERTICES_COUNT),
+                self.scroll_frame.view_port)
             self.create_creature(creature, i)
 
         self.generation += 1

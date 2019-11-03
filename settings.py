@@ -4,6 +4,9 @@
 # Max number of edges that added and removed
 MAX_EDGE_CHANGE_COUNT = 3
 
+# Creature
+MIN_VERTICES_COUNT = 4
+MAX_VERTICES_COUNT = 9
 
 # Training
 # Note:
@@ -22,6 +25,4 @@ K_COUNT = 5
 
 # Environment
 RENDER = False
-
-# time limit in seconds
-TIME_LIMIT = 5
+TIME_LIMIT = 5  # seconds
