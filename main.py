@@ -2,6 +2,8 @@
 import tkinter as tk
 import threading
 import os
+from copy import copy
+from random import choices
 
 from PIL import Image, ImageTk
 
@@ -9,7 +11,7 @@ from gui import Gui, ContextMenu, ScrollFrame
 from environment import Environment
 from framework.framework import main as framework
 from creature import Creature
-from settings import POPULATION_SIZE
+from settings import POPULATION_SIZE, SELECTION_SIZE, K_COUNT
 
 
 def create_directories():
@@ -22,7 +24,7 @@ def create_directories():
         os.makedirs("data/edges")
 
 
-COL_COUNT = 10
+COL_COUNT = 8
 
 
 class Application(Gui):
@@ -49,8 +51,12 @@ class Application(Gui):
         threading.Thread(target=self.threaded_find_fitness, daemon=True).start()
 
     def sort(self):
-        ''' Sork button callback '''
+        ''' Sort button callback '''
         threading.Thread(target=self.threaded_sort, daemon=True).start()
+
+    def do_selection(self):
+        ''' Do selection button callback '''
+        threading.Thread(target=self.threaded_selection, daemon=True).start()
 
     def threaded_create(self):
         ''' Creates an initial population of creatures '''
@@ -81,7 +87,7 @@ class Application(Gui):
         self.builder.get_object('find_fitness')['state'] = 'active'
 
     def threaded_find_fitness(self):
-        ''' Creates an initial population of creatures '''
+        ''' Finds the fitness of all the creatures with render off '''
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('find_fitness')['state'] = 'disabled'
         for i, creature in enumerate(self.creatures):
@@ -94,7 +100,7 @@ class Application(Gui):
         self.builder.get_object('sort')['state'] = 'active'
 
     def threaded_sort(self):
-        ''' Creates an initial population of creatures '''
+        ''' Sorts the creatures based on the fitness values '''
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('sort')['state'] = 'disabled'
 
@@ -109,6 +115,26 @@ class Application(Gui):
             self.builder.get_object('progress')['value'] = progress
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('do_selection')['state'] = 'active'
+
+    def threaded_selection(self):
+        ''' Selects the creatures based on the fitness values '''
+        self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('do_selection')['state'] = 'disabled'
+
+        selected_population = []
+        creatures = copy(self.creatures)
+        for _ in range(SELECTION_SIZE):
+            selected = choices(creatures, k=K_COUNT)[0]
+            selected_population.append(selected)
+            creatures.remove(selected)
+
+        for i, creature in enumerate(self.creatures):
+            if creature not in selected_population:
+                creature.frame.grid_forget()
+            progress = i * 100 // POPULATION_SIZE
+            self.builder.get_object('progress')['value'] = progress
+        self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('reproduce')['state'] = 'active'
 
     def test_fitness(self, creature: Creature):
         ''' Tests the fitness of a single creature with render on '''
