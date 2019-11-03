@@ -2,8 +2,8 @@
 import tkinter as tk
 import threading
 import os
+import random
 from copy import copy
-from random import choices
 
 from PIL import Image, ImageTk
 
@@ -33,12 +33,15 @@ class Application(Gui):
 
     def __init__(self, master):
         Gui.__init__(self, master, 'Evolution Simulator')
+        self.builder.get_object('do_generation')['state'] = 'disabled'
         self.builder.get_object('find_fitness')['state'] = 'disabled'
         self.builder.get_object('sort')['state'] = 'disabled'
         self.builder.get_object('do_selection')['state'] = 'disabled'
         self.builder.get_object('reproduce')['state'] = 'disabled'
         self.builder.get_object('save')['state'] = 'disabled'
+
         self.creatures = []
+        self.generation = 1
 
         self.scroll_frame = ScrollFrame(self.builder.get_object('creatures_frame'))
         self.scroll_frame.grid(sticky='nsew')
@@ -95,14 +98,17 @@ class Application(Gui):
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
         self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('do_generation')['state'] = 'active'
         self.builder.get_object('find_fitness')['state'] = 'active'
 
     def threaded_find_fitness(self):
         ''' Finds the fitness of all the creatures with render off '''
         self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('do_generation')['state'] = 'disabled'
         self.builder.get_object('find_fitness')['state'] = 'disabled'
         for i, creature in enumerate(self.creatures):
-            creature.fitness = framework(Environment, False, creature)
+            creature.fitness = random.random()*20       # For testing
+            # creature.fitness = framework(Environment, False, creature)
             creature.set_description()
             creature.description.grid(sticky='w')
             progress = i * 100 // POPULATION_SIZE
@@ -135,11 +141,11 @@ class Application(Gui):
         selected_population = []
         creatures = copy(self.creatures)
         for _ in range(SELECTION_SIZE):
-            selected = max(choices(creatures, k=K_COUNT), key=lambda c: c.fitness)
+            selected = max(random.choices(creatures, k=K_COUNT), key=lambda c: c.fitness)
             selected_population.append(selected)
             creatures.remove(selected)
 
-        for i, creature in enumerate(self.creatures):
+        for i, creature in enumerate(copy(self.creatures)):
             if creature not in selected_population:
                 creature.frame.grid_forget()
                 self.creatures.remove(creature)
@@ -159,7 +165,6 @@ class Application(Gui):
 
         creatures = copy(self.creatures)
         total_creatures = len(creatures)
-        print(total_creatures)
         self.creatures = []
         k = 0
         for i, creature in enumerate(creatures):
@@ -169,7 +174,11 @@ class Application(Gui):
                 k += 1
             progress = i * 100 // total_creatures
             self.builder.get_object('progress')['value'] = progress
+
+        self.generation += 1
+        self.builder.get_object('details')['text'] = f'Generation #{self.generation}'
         self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('do_generation')['state'] = 'active'
         self.builder.get_object('find_fitness')['state'] = 'active'
 
     def test_fitness(self, creature: Creature):
