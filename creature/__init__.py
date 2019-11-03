@@ -1,5 +1,7 @@
 "Module to generate random connected graphs"
+import tkinter as tk
 from random import choice, randint, sample
+
 import cv2
 import numpy as np
 
@@ -66,7 +68,12 @@ class Creature:
         self.size = size
         self.vertices = create_vertices(n, size)
         self.edges = create_edges(n)
-        self.fitness = None
+        self.fitness = 0.0
+
+        # Tkinter GUI
+        self.description = None
+        self.frame = None
+
         Creature.count += 1
 
     def get_image(self, scale=50):
@@ -98,3 +105,11 @@ class Creature:
         "Draws connected graph using vertices and edges"
         cv2.imshow("", self.get_image(scale))
         cv2.waitKey()
+
+    def set_description(self):
+        ''' Sets the description label component '''
+        self.description['text'] = (
+            f'Creature #{self.identity} \n'
+            f'Fitness: {"{:.2f}".format(self.fitness)}\n'
+            f'Species: V{len(self.vertices)}'
+        )

@@ -44,6 +44,10 @@ class Application(Gui):
         ''' Create button callback '''
         threading.Thread(target=self.threaded_create, daemon=True).start()
 
+    def find_fitness(self):
+        ''' Find fitness button callback '''
+        threading.Thread(target=self.threaded_find_fitness, daemon=True).start()
+
     def threaded_create(self):
         ''' Creates an initial population of creatures '''
         self.builder.get_object('progress')['value'] = 0
@@ -55,20 +59,17 @@ class Application(Gui):
             pillow_image = Image.fromarray(image)
             imgtk = ImageTk.PhotoImage(image=pillow_image)
 
-            frame = tk.Frame(self.scroll_frame.view_port)
-            frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
-            panel = tk.Label(frame)
-            description = tk.Label(
-                frame,
-                text=f'Creature #{creature.identity} \n'
-                f'Fitness: {creature.fitness}\n'
-                f'Species: V{len(creature.vertices)}',
-                font=(None, 7))
+            creature.frame = tk.Frame(self.scroll_frame.view_port)
+            creature.frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
+
+            creature.description = tk.Label(creature.frame, font=(None, 7), width=10)
+            creature.set_description()
             right_click = ContextMenu(self.master, [
                 {'label': 'Test fitness', 'command': lambda c=creature: self.test_fitness(c)},
                 {'label': 'Test reproduce', 'command': self.test_fitness}])
+            creature.description.grid(sticky='w')
+            panel = tk.Label(creature.frame)
             panel.bind('<Button-3>', right_click.popup)
-            description.grid(sticky='w')
             panel.grid()
             panel.imgtk = imgtk
             panel.config(image=imgtk)
@@ -78,7 +79,22 @@ class Application(Gui):
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('find_fitness')['state'] = 'active'
 
+    def threaded_find_fitness(self):
+        ''' Creates an initial population of creatures '''
+        self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('find_fitness')['state'] = 'disabled'
+
+        for i, creature in enumerate(self.creatures):
+            creature.fitness = framework(Environment, False, creature)
+            creature.set_description()
+            creature.description.grid(sticky='w')
+            progress = i * 100 // POPULATION_SIZE
+            self.builder.get_object('progress')['value'] = progress
+        self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('sort')['state'] = 'active'
+
     def test_fitness(self, creature: Creature):
+        ''' Tests the fitness of a single creature with render on '''
         fitness = framework(Environment, True, creature)
         print(fitness)
 
