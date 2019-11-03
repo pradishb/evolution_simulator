@@ -12,7 +12,9 @@ from environment import Environment
 from framework.framework import main as framework
 from reproduction import reproduce
 from creature import Creature
-from settings import POPULATION_SIZE, SELECTION_SIZE, OFFSPRINGS_PER_SELECTION_SIZE, K_COUNT
+from settings import (
+    POPULATION_SIZE, SELECTION_SIZE, OFFSPRINGS_PER_SELECTION_SIZE, RANDOM_NEW_POPULATION_SIZE,
+    K_COUNT)
 
 
 def create_directories():
@@ -174,6 +176,10 @@ class Application(Gui):
                 k += 1
             progress = i * 100 // total_creatures
             self.builder.get_object('progress')['value'] = progress
+
+        for i in range(k, k+RANDOM_NEW_POPULATION_SIZE):
+            creature = Creature(5, self.scroll_frame.view_port)
+            self.create_creature(creature, i)
 
         self.generation += 1
         self.builder.get_object('details')['text'] = f'Generation #{self.generation}'
