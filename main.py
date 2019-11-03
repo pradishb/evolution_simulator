@@ -173,16 +173,15 @@ class Application(Gui):
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('reproduce')['state'] = 'disabled'
 
-        # Empty the view port
-        for widget in self.scroll_frame.view_port.winfo_children():
-            widget.grid_forget()
-
         creatures = copy(self.creatures)
         total_creatures = len(creatures)
         self.creatures = []
         k = 0
         for i, creature in enumerate(creatures):
             for _ in range(OFFSPRINGS_PER_SELECTION_SIZE):
+                self.creatures.append(creature)
+                creature.frame.grid(row=k//COL_COUNT, column=k % COL_COUNT)
+                k += 1
                 offspring = reproduce(creature)
                 self.create_creature(offspring, k)
                 k += 1
