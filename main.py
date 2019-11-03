@@ -6,6 +6,7 @@ import random
 from copy import copy
 
 from PIL import Image, ImageTk
+import easygui
 
 from gui import Gui, ContextMenu, ScrollFrame
 from environment import Environment
@@ -197,7 +198,9 @@ class Application(Gui):
     def test_fitness(self, creature: Creature):
         ''' Tests the fitness of a single creature with render on '''
         fitness = framework(Environment, True, [creature,])
-        print(fitness)
+        easygui.msgbox(
+            f'Fitness of creature #{creature.identity}: {"{:.2f}".format(fitness)}',
+            'Fitness Test Result')
 
 
 def main():
