@@ -41,6 +41,10 @@ class Application(Gui):
 
         self.scroll_frame = ScrollFrame(self.builder.get_object('creatures_frame'))
         self.scroll_frame.grid(sticky='nsew')
+        for col in range(COL_COUNT):
+            self.scroll_frame.view_port.columnconfigure(col, minsize=66)
+        for row in range(POPULATION_SIZE//COL_COUNT + 1):
+            self.scroll_frame.view_port.rowconfigure(row, minsize=106)
 
     def create(self):
         ''' Create button callback '''
@@ -124,13 +128,14 @@ class Application(Gui):
         selected_population = []
         creatures = copy(self.creatures)
         for _ in range(SELECTION_SIZE):
-            selected = choices(creatures, k=K_COUNT)[0]
+            selected = max(choices(creatures, k=K_COUNT), key=lambda c: c.fitness)
             selected_population.append(selected)
             creatures.remove(selected)
 
         for i, creature in enumerate(self.creatures):
             if creature not in selected_population:
                 creature.frame.grid_forget()
+                self.creatures.pop(i)
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
         self.builder.get_object('progress')['value'] = 0
