@@ -111,7 +111,7 @@ class Application(Gui):
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('do_generation')['state'] = 'disabled'
         self.builder.get_object('find_fitness')['state'] = 'disabled'
-        fitness_es = framework(Environment, True, self.creatures)
+        fitness_es = framework(Environment, False, self.creatures)
         for i, creature in enumerate(self.creatures):
             creature.fitness = fitness_es[creature.identity]       # For testing
             # creature.fitness = framework(Environment, False, creature)

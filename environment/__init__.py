@@ -1,7 +1,7 @@
 "Environment Module"
 from Box2D import b2EdgeShape, b2FixtureDef, b2PolygonShape
 
-from settings import RENDER, TIME_LIMIT
+from settings import RENDER, STEP_LIMIT
 from creature import Creature, find_adjacent_edges
 from framework.framework import Framework
 from maths.maths import line_to_rectangle
@@ -20,12 +20,13 @@ class Environment(Framework):
     def __init__(self, creatures):
         self.env = super(Environment, self).__init__()
         self.settings.drawJoints = False
-        self.settings.render = RENDER
-        Environment.time_limit = TIME_LIMIT
+        Environment.step_limit = STEP_LIMIT
 
         _ = self.world.CreateBody(
             shapes=b2EdgeShape(vertices=[(-500, 0), (500, 0)])
         )
+        Environment.description = []
+        Environment.creature_bodies = {}
         for creature in creatures:
             Environment.description.append(f"Creature #{creature.identity}")
 

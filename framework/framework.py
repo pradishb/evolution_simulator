@@ -75,8 +75,8 @@ class FrameworkBase(b2ContactListener):
     description = []
     fitness = {}
     starting_position = {}
-    time_limit = None
-    render = None
+    step_limit = None
+    render = False
     start_time = None
     creature_bodies = {}
     TEXTLINE_START = 30
@@ -130,9 +130,10 @@ class FrameworkBase(b2ContactListener):
         self.world = None
         self.description = []
         self.fitness = []
-        self.starting_position = []
-        self.time_limit = None
+        self.starting_position = {}
+        self.step_limit = None
         self.start_time = None
+        self.creature_bodies = {}
         # Box2D-callbacks
         self.destructionListener = None
         
@@ -149,7 +150,6 @@ class FrameworkBase(b2ContactListener):
             timeStep = 1.0 / settings.hz
         else:
             timeStep = 0.0
-
         if self.render:
             for key in self.creature_bodies.keys():
                 fitness = get_fitness(self.creature_bodies[key].values(),
@@ -408,9 +408,12 @@ class FrameworkBase(b2ContactListener):
         self.textLine = self.TEXTLINE_START
 
         # Draw the name of the test running
-        self.Print(self.name, (127, 127, 255))
 
-        if self.description:
+        self.Print(self.name, (127, 127, 255))
+        self.Print("Running The Simulation . . . ", (127, 127, 255))
+        self.Print(str('On Step : '+str(self.stepCount)), (127, 127, 255))
+
+        if self.description and self.render:
             for desc in self.description:
                 # Draw the name of the test running
                 for s in desc.split('\n'):
@@ -419,7 +422,7 @@ class FrameworkBase(b2ContactListener):
         # Do the main physics step
         self.Step(self.settings)
 
-        if time() > self.start_time + self.time_limit:
+        if self.stepCount > self.step_limit:
             return True
 
     def ConvertScreenToWorld(self, x, y):
