@@ -110,8 +110,9 @@ class Application(Gui):
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('do_generation')['state'] = 'disabled'
         self.builder.get_object('find_fitness')['state'] = 'disabled'
+        fitness_es = framework(Environment, True, self.creatures)
         for i, creature in enumerate(self.creatures):
-            creature.fitness = random.random()*20       # For testing
+            creature.fitness = fitness_es[creature.identity]       # For testing
             # creature.fitness = framework(Environment, False, creature)
             creature.set_description()
             creature.description.grid(sticky='w')
@@ -195,7 +196,7 @@ class Application(Gui):
 
     def test_fitness(self, creature: Creature):
         ''' Tests the fitness of a single creature with render on '''
-        fitness = framework(Environment, True, creature)
+        fitness = framework(Environment, True, [creature,])
         print(fitness)
 
 

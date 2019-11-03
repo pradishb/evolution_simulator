@@ -72,12 +72,13 @@ class FrameworkBase(b2ContactListener):
       be used for your test.
     """
     name = "None"
-    description = None
-    fitness = None
-    starting_position = None
+    description = []
+    fitness = {}
+    starting_position = {}
     time_limit = None
     render = None
     start_time = None
+    creature_bodies = {}
     TEXTLINE_START = 30
     colors = {
         'mouse_point': b2Color(0, 1, 0),
@@ -123,6 +124,18 @@ class FrameworkBase(b2ContactListener):
     def __del__(self):
         pass
 
+    def reset_all(self):
+        ''' Reset all varibles'''
+        # Box2D-related
+        self.world = None
+        self.description = []
+        self.fitness = []
+        self.starting_position = []
+        self.time_limit = None
+        self.start_time = None
+        # Box2D-callbacks
+        self.destructionListener = None
+        
     def Step(self, settings):
         """
         The main physics step.
@@ -138,8 +151,10 @@ class FrameworkBase(b2ContactListener):
             timeStep = 0.0
 
         if self.render:
-            fitness = get_fitness(self.world.bodies, self.starting_position)
-            self.Print("Fitness  : "+str(fitness), (225, 225, 225, 225))
+            for key in self.creature_bodies.keys():
+                fitness = get_fitness(self.creature_bodies[key].values(),
+                                      self.starting_position[key])
+                self.Print(str(key)+"'s Fitness : "+str(fitness), (225, 225, 225, 225))
             renderer = self.renderer
         else:
             renderer = None
@@ -396,9 +411,10 @@ class FrameworkBase(b2ContactListener):
         self.Print(self.name, (127, 127, 255))
 
         if self.description:
-            # Draw the name of the test running
-            for s in self.description.split('\n'):
-                self.Print(s, (127, 255, 127))
+            for desc in self.description:
+                # Draw the name of the test running
+                for s in desc.split('\n'):
+                    self.Print(s, (127, 255, 127))
 
         # Do the main physics step
         self.Step(self.settings)
@@ -507,7 +523,11 @@ def main(test_class, render, *args):
     test.start_time = time()
     test.render = render
     test.run()
-    fitness = get_fitness(test.world.bodies, test.starting_position)
+    fitness = {}
+    for key in test.creature_bodies.keys():
+        fitness[key] = get_fitness(test.creature_bodies[key].values(),
+                                   test.starting_position[key])
+    test.reset_all()
     pygame.quit()
     return fitness
 

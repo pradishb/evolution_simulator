@@ -15,45 +15,48 @@ class Environment(Framework):
 
     speed = 1000  # platform speed
 
-    def __init__(self, creature: Creature):
-        super(Environment, self).__init__()
+    env = None
+
+    def __init__(self, creatures):
+        self.env = super(Environment, self).__init__()
         self.settings.drawJoints = False
         self.settings.render = RENDER
-
-        Environment.description = f"Creature #{creature.identity}"
+        Environment.time_limit = TIME_LIMIT
 
         _ = self.world.CreateBody(
             shapes=b2EdgeShape(vertices=[(-500, 0), (500, 0)])
         )
+        for creature in creatures:
+            Environment.description.append(f"Creature #{creature.identity}")
 
-        body = {}
+            body = {}
 
-        for edge in creature.edges:
-            vertex = creature.vertices[edge[0]], creature.vertices[edge[1]]
-            point = line_to_rectangle(*vertex, THICKNESS)
+            for edge in creature.edges:
+                vertex = creature.vertices[edge[0]], creature.vertices[edge[1]]
+                point = line_to_rectangle(*vertex, THICKNESS)
 
-            fixture = b2FixtureDef(
-                shape=b2PolygonShape(vertices=point),
-                density=2,
-                friction=0.6,
-            )
-            fixture.filter.groupIndex = -1
-            body[tuple(edge)] = self.world.CreateDynamicBody(
-                fixtures=fixture,
-            )
-
-        for edge in creature.edges:
-            adjacent = find_adjacent_edges(edge, creature.edges)
-            for a_edge in adjacent:
-                anchor = int(creature.vertices[edge[0]][0]), int(creature.vertices[edge[0]][1])
-                self.world.CreateRevoluteJoint(
-                    bodyA=body[tuple(edge)],
-                    bodyB=body[tuple(a_edge)],
-                    anchor=anchor,
-                    collideConnected=True,
-                    motorSpeed=100,
-                    maxMotorTorque=250,
-                    enableMotor=True,
+                fixture = b2FixtureDef(
+                    shape=b2PolygonShape(vertices=point),
+                    density=2,
+                    friction=0.6,
                 )
-        Environment.time_limit = TIME_LIMIT
-        Environment.starting_position = get_position_of_creature(body.values())
+                fixture.filter.groupIndex = -1
+                body[tuple(edge)] = self.world.CreateDynamicBody(
+                    fixtures=fixture,
+                )
+
+            for edge in creature.edges:
+                adjacent = find_adjacent_edges(edge, creature.edges)
+                for a_edge in adjacent:
+                    anchor = int(creature.vertices[edge[0]][0]), int(creature.vertices[edge[0]][1])
+                    self.world.CreateRevoluteJoint(
+                        bodyA=body[tuple(edge)],
+                        bodyB=body[tuple(a_edge)],
+                        anchor=anchor,
+                        collideConnected=True,
+                        motorSpeed=100,
+                        maxMotorTorque=250,
+                        enableMotor=True,
+                    )
+            Environment.creature_bodies[creature.identity] = body
+            Environment.starting_position[creature.identity] = get_position_of_creature(body.values())
