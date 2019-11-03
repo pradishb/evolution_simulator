@@ -62,7 +62,7 @@ class Creature:
     ''' Saves the data of a creature '''
     count = 0
 
-    def __init__(self, n, size=10):
+    def __init__(self, n, view_port, size=10):
         self.n = n
         self.identity = Creature.count + 1
         self.size = size
@@ -71,8 +71,8 @@ class Creature:
         self.fitness = 0.0
 
         # Tkinter GUI
-        self.description = None
-        self.frame = None
+        self.frame = tk.Frame(view_port)
+        self.description = tk.Label(self.frame, font=(None, 7), width=10)
 
         Creature.count += 1
 

@@ -48,21 +48,22 @@ class Application(Gui):
         ''' Find fitness button callback '''
         threading.Thread(target=self.threaded_find_fitness, daemon=True).start()
 
+    def sort(self):
+        ''' Sork button callback '''
+        threading.Thread(target=self.threaded_sort, daemon=True).start()
+
     def threaded_create(self):
         ''' Creates an initial population of creatures '''
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('create')['state'] = 'disabled'
         for i in range(POPULATION_SIZE):
-            creature = Creature(5)
+            creature = Creature(5, self.scroll_frame.view_port)
             self.creatures.append(creature)
             image = creature.get_image(5)
             pillow_image = Image.fromarray(image)
             imgtk = ImageTk.PhotoImage(image=pillow_image)
 
-            creature.frame = tk.Frame(self.scroll_frame.view_port)
             creature.frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
-
-            creature.description = tk.Label(creature.frame, font=(None, 7), width=10)
             creature.set_description()
             right_click = ContextMenu(self.master, [
                 {'label': 'Test fitness', 'command': lambda c=creature: self.test_fitness(c)},
@@ -83,7 +84,6 @@ class Application(Gui):
         ''' Creates an initial population of creatures '''
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('find_fitness')['state'] = 'disabled'
-
         for i, creature in enumerate(self.creatures):
             creature.fitness = framework(Environment, False, creature)
             creature.set_description()
@@ -92,6 +92,23 @@ class Application(Gui):
             self.builder.get_object('progress')['value'] = progress
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('sort')['state'] = 'active'
+
+    def threaded_sort(self):
+        ''' Creates an initial population of creatures '''
+        self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('sort')['state'] = 'disabled'
+
+        # Empty the view port
+        for widget in self.scroll_frame.view_port.winfo_children():
+            widget.grid_forget()
+
+        self.creatures.sort(key=lambda c: c.fitness, reverse=True)
+        for i, creature in enumerate(self.creatures):
+            creature.frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
+            progress = i * 100 // POPULATION_SIZE
+            self.builder.get_object('progress')['value'] = progress
+        self.builder.get_object('progress')['value'] = 0
+        self.builder.get_object('do_selection')['state'] = 'active'
 
     def test_fitness(self, creature: Creature):
         ''' Tests the fitness of a single creature with render on '''
