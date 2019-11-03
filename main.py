@@ -43,7 +43,7 @@ class Application(Gui):
 
     def __init__(self, master):
         Gui.__init__(self, master, 'Evolution Simulator')
-        self.builder.get_object('do_generation')['state'] = 'disabled'
+        self.builder.get_object('train')['state'] = 'disabled'
         self.builder.get_object('find_fitness')['state'] = 'disabled'
         self.builder.get_object('sort')['state'] = 'disabled'
         self.builder.get_object('do_selection')['state'] = 'disabled'
@@ -98,6 +98,10 @@ class Application(Gui):
         ''' Reproduce button callback '''
         threading.Thread(target=self.threaded_reproduce, daemon=True).start()
 
+    def train(self):
+        ''' Do generation button callback '''
+        threading.Thread(target=self.threaded_train, daemon=True).start()
+
     def threaded_create(self):
         ''' Creates an initial population of creatures '''
         self.builder.get_object('progress')['value'] = 0
@@ -110,15 +114,15 @@ class Application(Gui):
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
         self.builder.get_object('progress')['value'] = 0
-        self.builder.get_object('do_generation')['state'] = 'active'
+        self.builder.get_object('train')['state'] = 'active'
         self.builder.get_object('find_fitness')['state'] = 'active'
 
-    def threaded_find_fitness(self):
+    def threaded_find_fitness(self, render=True):
         ''' Finds the fitness of all the creatures with render off '''
         self.builder.get_object('progress')['value'] = 0
-        self.builder.get_object('do_generation')['state'] = 'disabled'
+        self.builder.get_object('train')['state'] = 'disabled'
         self.builder.get_object('find_fitness')['state'] = 'disabled'
-        fitness_es = framework(Environment, True, self.creatures)
+        fitness_es = framework(Environment, render, self.creatures)
         for i, creature in enumerate(self.creatures):
             creature.fitness = fitness_es[creature.identity]
             creature.set_description()
@@ -197,8 +201,23 @@ class Application(Gui):
         self.generation += 1
         self.builder.get_object('details')['text'] = f'Generation #{self.generation}'
         self.builder.get_object('progress')['value'] = 0
-        self.builder.get_object('do_generation')['state'] = 'active'
+        self.builder.get_object('train')['state'] = 'active'
         self.builder.get_object('find_fitness')['state'] = 'active'
+
+    def threaded_train(self):
+        ''' Does training for x generations '''
+        repeat = int(self.builder.get_object('repeat').get())
+        for _ in range(repeat):
+            self.builder.get_object('train')['state'] = 'disabled'
+            self.builder.get_object('find_fitness')['state'] = 'disabled'
+            self.threaded_find_fitness(render=False)
+            self.threaded_sort()
+            self.threaded_selection()
+            self.threaded_reproduce()
+
+        self.threaded_find_fitness()
+        self.threaded_sort()
+        self.builder.get_object('do_selection')['state'] = 'active'
 
 
 def main():

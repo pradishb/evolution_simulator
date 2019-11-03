@@ -1,7 +1,7 @@
 "Environment Module"
 from Box2D import b2EdgeShape, b2FixtureDef, b2PolygonShape
 
-from settings import RENDER, STEP_LIMIT
+from settings import STEP_LIMIT
 from creature import Creature, find_adjacent_edges
 from framework.framework import Framework
 from maths.maths import line_to_rectangle
