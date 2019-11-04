@@ -55,8 +55,6 @@ class Environment(Framework):
                         maxMotorTorque=MAX_MOTOR_TORQUE,
                         enableMotor=True,
                     )
-            Environment.creature_bodies[creature.identity] = body
-            Environment.starting_position[creature.identity] = get_position_of_creature(
-                body.values())
+            Environment.creature_bodies[creature.identity] = body[tuple(edge)]
         if len(creatures) == 1:
             Environment.description.append(f"Creature #{creatures[0].identity}")

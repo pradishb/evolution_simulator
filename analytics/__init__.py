@@ -29,7 +29,7 @@ def create_analytics_data(generations, serializable_creatures,):
 
     for creature_id in generations[-1]:
         creature = serializable_creatures[creature_id]
-        histogram.append(int(creature['fitness'].round()))
+        histogram.append(int(creature['fitness']))
     return histogram, medians, species
 
 

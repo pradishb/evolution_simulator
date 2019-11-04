@@ -17,6 +17,7 @@ from reproduction import reproduce
 from analytics import show_analytics
 from creature import Creature
 from file import save_generations, load_generations
+from simulation import Simulation
 from settings import (
     POPULATION_SIZE, SELECTION_SIZE, OFFSPRINGS_PER_SELECTION_SIZE, RANDOM_NEW_POPULATION_SIZE,
     MIN_VERTICES_COUNT, MAX_VERTICES_COUNT, MAX_SIZE, K_COUNT)
@@ -50,6 +51,7 @@ class Application(Gui):
         for row in range(POPULATION_SIZE//COL_COUNT + 1):
             self.scroll_frame.view_port.rowconfigure(row, minsize=106)
 
+        self.simulation = Simulation()
         self.creatures = []
         self.serializable_creatures = {}
         self.generations = []
@@ -229,13 +231,14 @@ class Application(Gui):
             self.builder.get_object('find_fitness')['state'] = 'disabled'
             repeat = int(self.builder.get_object('repeat').get())
 
-            for i in range(repeat):
+            for _ in range(repeat):
                 self.threaded_selection()
                 self.threaded_reproduce()
-
-                progress = i * 100 // repeat
-                self.builder.get_object('progress')['value'] = progress
-                self.threaded_find_fitness(render=False)
+                fitness = self.simulation.simulate(self.creatures)
+                for creature in self.creatures:
+                    creature.fitness = fitness[creature.identity]
+                    creature.set_description()
+                    creature.description.grid(sticky='w')
                 self.threaded_sort()
             self.builder.get_object('do_selection')['state'] = 'active'
         except ValueError:

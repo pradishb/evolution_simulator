@@ -74,7 +74,6 @@ class FrameworkBase(b2ContactListener):
     name = "None"
     description = []
     fitness = {}
-    starting_position = {}
     step_limit = None
     render = False
     start_time = None
@@ -130,7 +129,6 @@ class FrameworkBase(b2ContactListener):
         self.world = None
         self.description = []
         self.fitness = []
-        self.starting_position = {}
         self.step_limit = None
         self.start_time = None
         self.creature_bodies = {}
@@ -274,8 +272,7 @@ class FrameworkBase(b2ContactListener):
             if self.render:
                 if len(self.creature_bodies) == 1:
                     key = list(self.creature_bodies.keys())[0]
-                    fitness = get_fitness(
-                        self.creature_bodies[key].values(), self.starting_position[key])
+                    fitness = self.creature_bodies[key].position[0]
                     self.Print(f'Fitness: {"{:.2f}".format(fitness)}', (225, 225, 225, 225))
 
         if settings.drawFPS:
@@ -424,7 +421,7 @@ class FrameworkBase(b2ContactListener):
         # Do the main physics step
         self.Step(self.settings)
 
-        if self.stepCount > self.step_limit:
+        if self.stepCount >= self.step_limit:
             return True
 
     def ConvertScreenToWorld(self, x, y):
@@ -528,9 +525,8 @@ def main(test_class, render, *args):
     test.render = render
     test.run()
     fitness = {}
-    for key in test.creature_bodies.keys():
-        fitness[key] = get_fitness(test.creature_bodies[key].values(),
-                                   test.starting_position[key])
+    for key, body in test.creature_bodies.items():
+        fitness[key] = body.position[0]
     test.reset_all()
     pygame.quit()
     return fitness
