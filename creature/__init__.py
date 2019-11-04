@@ -81,6 +81,7 @@ class Creature:
         if view_port is not None:
             self.view_port = view_port
             self.frame = tk.Frame(self.view_port)
+            self.right_click = None
             self.description = tk.Label(
                 self.frame, font=(None, 7,), width=10, anchor='w', justify='left')
         else:

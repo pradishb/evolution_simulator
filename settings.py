@@ -24,7 +24,7 @@ RANDOM_NEW_POPULATION_SIZE = 10
 # Note: K_COUNT must be lower than POPULATION_SIZE
 # More information on
 # https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_parent_selection.htm
-K_COUNT = 5
+K_COUNT = 10
 
 # Environment
 STEP_LIMIT = 20 * 60  # step count, 60 steps = 1 sec

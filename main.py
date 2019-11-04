@@ -76,11 +76,11 @@ class Application(Gui):
         imgtk = ImageTk.PhotoImage(image=pillow_image)
         creature.frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
         creature.set_description()
-        right_click = ContextMenu(self.master, [
+        creature.right_click = ContextMenu(self.master, [
             {'label': 'Test fitness', 'command': lambda c=creature: self.test_fitness(c)}, ])
         creature.description.grid(sticky='w')
         panel = tk.Label(creature.frame)
-        panel.bind('<Button-3>', right_click.popup)
+        panel.bind('<Button-3>', creature.right_click.popup)
         panel.grid()
         panel.imgtk = imgtk
         panel.config(image=imgtk)
@@ -144,7 +144,6 @@ class Application(Gui):
             creature.fitness = fitness[creature.identity]
             creature.set_description()
             creature.description.grid(sticky='w')
-            progress = i * 100 // POPULATION_SIZE
         self.builder.get_object('sort')['state'] = 'active'
 
     def threaded_sort(self):
@@ -182,6 +181,9 @@ class Application(Gui):
         for i, creature in enumerate(copy(self.creatures)):
             if creature not in selected_population:
                 creature.frame.grid_forget()
+                creature.right_click.menu.destroy()
+                creature.description.destroy()
+                creature.frame.destroy()
                 self.creatures.remove(creature)
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
