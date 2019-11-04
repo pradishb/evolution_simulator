@@ -8,7 +8,7 @@ from settings import MAX_EDGE_CHANGE_COUNT
 
 def reproduce(creature: Creature):
     ''' Creates a offsprings of a creature by adding or removing some edges '''
-    offspring = Creature(creature.n, creature.view_port, creature.size)
+    offspring = Creature(n=creature.n, view_port=creature.view_port, size=creature.size)
     offspring.vertices = creature.vertices
     offspring.edges = creature.edges
 

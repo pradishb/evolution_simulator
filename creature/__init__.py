@@ -62,20 +62,41 @@ class Creature:
     ''' Saves the data of a creature '''
     count = 0
 
-    def __init__(self, n, view_port, size=10):
-        self.n = n
-        self.identity = Creature.count + 1
-        self.size = size
-        self.vertices = create_vertices(n, size)
-        self.edges = create_edges(n)
-        self.fitness = 0.0
+    def __init__(self, **kwargs):
+        self.n = kwargs.get('n')
+
+        identity = kwargs.get('identity', None)
+        if identity is None:
+            self.identity = Creature.count + 1
+            Creature.count += 1
+        else:
+            self.identity = identity
+        self.size = kwargs.get('size', 10)
+        self.vertices = kwargs.get('vertices', create_vertices(self.n, self.size))
+        self.edges = kwargs.get('edges', create_edges(self.n))
+        self.fitness = kwargs.get('fitness', 0.0)
 
         # Tkinter GUI
-        self.view_port = view_port
-        self.frame = tk.Frame(view_port)
-        self.description = tk.Label(self.frame, font=(None, 7), width=10)
+        view_port = kwargs.get('view_port', None)
+        if view_port is not None:
+            self.view_port = view_port
+            self.frame = tk.Frame(self.view_port)
+            self.description = tk.Label(self.frame, font=(None, 7), width=10)
+        else:
+            self.view_port = None
+            self.frame = None
+            self.description = None
 
-        Creature.count += 1
+    def get_data(self):
+        ''' Returns a picklable data '''
+        return {
+            'n': self.n,
+            'identity': self.identity,
+            'size': self.size,
+            'vertices': self.vertices,
+            'edges': self.edges,
+            'fitness': self.fitness,
+        }
 
     def get_image(self, scale=50):
         ''' Returns a cv2 image representation of the creature '''

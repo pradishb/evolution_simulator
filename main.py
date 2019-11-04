@@ -13,6 +13,7 @@ from environment import Environment
 from framework.framework import main as framework
 from reproduction import reproduce
 from creature import Creature
+from file import save_creature, save_generations
 from settings import (
     POPULATION_SIZE, SELECTION_SIZE, OFFSPRINGS_PER_SELECTION_SIZE, RANDOM_NEW_POPULATION_SIZE,
     MIN_VERTICES_COUNT, MAX_VERTICES_COUNT, K_COUNT)
@@ -22,12 +23,8 @@ COL_COUNT = 8
 
 def create_directories():
     "Creates necesesary directories"
-    if not os.path.exists("data"):
-        os.makedirs("data")
-    if not os.path.exists("data/vertices"):
-        os.makedirs("data/vertices")
-    if not os.path.exists("data/edges"):
-        os.makedirs("data/edges")
+    os.makedirs("data/creatures", exist_ok=True)
+    os.makedirs("data/vertices", exist_ok=True)
 
 
 def test_fitness(creature: Creature):
@@ -51,7 +48,7 @@ class Application(Gui):
         self.builder.get_object('save')['state'] = 'disabled'
 
         self.creatures = []
-        self.generation = 1
+        self.generations = []
 
         self.scroll_frame = ScrollFrame(self.builder.get_object('creatures_frame'))
         self.scroll_frame.grid(sticky='nsew')
@@ -59,6 +56,15 @@ class Application(Gui):
             self.scroll_frame.view_port.columnconfigure(col, minsize=66)
         for row in range(POPULATION_SIZE//COL_COUNT + 1):
             self.scroll_frame.view_port.rowconfigure(row, minsize=106)
+
+    def create_generation(self):
+        ''' Creates a generation file '''
+        creatures = []
+        for creature in self.creatures:
+            save_creature(creature)
+            creatures.append(creature.identity)
+        self.generations.append(creatures)
+        save_generations(self.generations, 'default')
 
     def create_creature(self, creature, i):
         ''' Creates a single creature '''
@@ -108,8 +114,8 @@ class Application(Gui):
         self.builder.get_object('create')['state'] = 'disabled'
         for i in range(POPULATION_SIZE):
             creature = Creature(
-                random.randint(MIN_VERTICES_COUNT, MAX_VERTICES_COUNT),
-                self.scroll_frame.view_port)
+                n=random.randint(MIN_VERTICES_COUNT, MAX_VERTICES_COUNT),
+                view_port=self.scroll_frame.view_port)
             self.create_creature(creature, i)
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
@@ -146,6 +152,7 @@ class Application(Gui):
             creature.frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
+        self.create_generation()
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('save')['state'] = 'active'
         self.builder.get_object('do_selection')['state'] = 'active'
@@ -194,12 +201,11 @@ class Application(Gui):
 
         for i in range(k, k+RANDOM_NEW_POPULATION_SIZE):
             creature = Creature(
-                random.randint(MIN_VERTICES_COUNT, MAX_VERTICES_COUNT),
-                self.scroll_frame.view_port)
+                n=random.randint(MIN_VERTICES_COUNT, MAX_VERTICES_COUNT),
+                view_port=self.scroll_frame.view_port)
             self.create_creature(creature, i)
 
-        self.generation += 1
-        self.builder.get_object('details')['text'] = f'Generation #{self.generation}'
+        self.builder.get_object('details')['text'] = f'Generation #{len(self.generations)+1}'
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('train')['state'] = 'active'
         self.builder.get_object('find_fitness')['state'] = 'active'
