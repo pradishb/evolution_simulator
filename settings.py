@@ -3,14 +3,14 @@
 # Reproduction
 # Max number of edges that added and removed
 MAX_EDGE_CHANGE_COUNT = 3
-MAX_VERTICES_PIXEL_CHANGE = 1
+MAX_VERTICES_PIXEL_CHANGE = 2
 MAX_SIZE = 7
 
 # Creature
 MIN_VERTICES_COUNT = 4
 MAX_VERTICES_COUNT = 6
-DENSITY = 5
-FRICTION = 0.6
+DENSITY = 3
+FRICTION = 0.8
 
 # Training
 # Note:
@@ -28,5 +28,5 @@ K_COUNT = 5
 
 # Environment
 STEP_LIMIT = 20 * 60  # step count, 60 steps = 1 sec
-MOTOR_SPEED = 200
-MAX_MOTOR_TORQUE = 400
+MOTOR_SPEED = 50
+MAX_MOTOR_TORQUE = 150

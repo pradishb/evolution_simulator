@@ -40,13 +40,13 @@ def reproduce(creature: Creature):
             edges = edges - {random_edge}
         offspring.edges = list(edges)
 
-    for i, vertex in enumerate(offspring.vertices):
-        x = vertex[0] + randint(-MAX_VERTICES_PIXEL_CHANGE, MAX_VERTICES_PIXEL_CHANGE)
-        x = max(0, x)
-        x = min(offspring.size, x)
-        y = vertex[1] + randint(-MAX_VERTICES_PIXEL_CHANGE, MAX_VERTICES_PIXEL_CHANGE)
-        y = max(0, y)
-        y = min(offspring.size, y)
-        offspring.vertices[i] = (x, y)
+    vertex = offspring.vertices[0]
+    x = vertex[0] + randint(-MAX_VERTICES_PIXEL_CHANGE, MAX_VERTICES_PIXEL_CHANGE)
+    x = max(0, x)
+    x = min(offspring.size-1, x)
+    y = vertex[1] + randint(-MAX_VERTICES_PIXEL_CHANGE, MAX_VERTICES_PIXEL_CHANGE)
+    y = max(0, y)
+    y = min(offspring.size-1, y)
+    offspring.vertices[0] = (x, y)
 
     return offspring
