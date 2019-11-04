@@ -1,7 +1,7 @@
 "Environment Module"
 from Box2D import b2EdgeShape, b2FixtureDef, b2PolygonShape
 
-from settings import STEP_LIMIT, MOTOR_SPEED, MAX_MOTOR_TORQUE
+from settings import STEP_LIMIT, MOTOR_SPEED, MAX_MOTOR_TORQUE, DENSITY, FRICTION
 from creature import Creature, find_adjacent_edges
 from framework.framework import Framework
 from maths.maths import line_to_rectangle
@@ -23,7 +23,7 @@ class Environment(Framework):
         Environment.step_limit = STEP_LIMIT
 
         _ = self.world.CreateBody(
-            shapes=b2EdgeShape(vertices=[(-500, 0), (500, 0)])
+            shapes=b2EdgeShape(vertices=[(-1000, -1), (1000, -1)])
         )
         Environment.description = []
         Environment.creature_bodies = {}
@@ -38,8 +38,8 @@ class Environment(Framework):
 
                 fixture = b2FixtureDef(
                     shape=b2PolygonShape(vertices=point),
-                    density=2,
-                    friction=0.6,
+                    density=DENSITY,
+                    friction=FRICTION,
                 )
                 fixture.filter.groupIndex = -1
                 body[tuple(edge)] = self.world.CreateDynamicBody(
