@@ -114,28 +114,7 @@ class Application(Gui):
         if self.generations == []:
             easygui.msgbox('There is no data to show', 'Error')
             return
-
-        medians = []
-        histogram = []
-        species = {}
-        generations_count = len(self.generations)
-        for i, generation in enumerate(self.generations):
-            median_index = (len(generation) - 1)//2
-            creature_id = generation[median_index]
-            creature = self.serializable_creatures[creature_id]
-            medians.append(creature['fitness'])
-            for creature_id in generation:
-                creature = self.serializable_creatures[creature_id]
-                creature = Creature(**creature)
-                cspecies = creature.get_species()
-                if cspecies not in species:
-                    species[cspecies] = [0] * generations_count
-                species[cspecies][i] += 1
-
-        for creature_id in self.generations[-1]:
-            creature = self.serializable_creatures[creature_id]
-            histogram.append(creature['fitness'])
-        show_analytics(self.get_generation(), histogram, medians, species)
+        show_analytics(self.get_generation(), self.generations, self.serializable_creatures)
 
     def threaded_create(self):
         ''' Creates an initial population of creatures '''

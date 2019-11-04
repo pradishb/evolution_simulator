@@ -1,14 +1,18 @@
 "Module to perform unittest"
 import unittest
-from . import load_generations
+
+from file import load_generations
+
+from . import show_analytics
 
 
 class FileTestCase(unittest.TestCase):
     "Class that contains test cases for project"
 
-    def test_load_generations(self):
+    def test_creature_creation(self):
         ''' Tests the creation of some creatures '''
-        print(load_generations('test_data/default.pickle'))
+        data = load_generations('test_data/default.pickle')
+        show_analytics('Test', data['generations'], data['creatures'])
 
 
 if __name__ == "__main__":
