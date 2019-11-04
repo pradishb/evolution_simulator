@@ -4,7 +4,6 @@ import threading
 import os
 import random
 from copy import copy
-from glob import glob
 
 from PIL import Image, ImageTk
 import easygui
@@ -17,14 +16,14 @@ from creature import Creature
 from file import save_generations, load_generations
 from settings import (
     POPULATION_SIZE, SELECTION_SIZE, OFFSPRINGS_PER_SELECTION_SIZE, RANDOM_NEW_POPULATION_SIZE,
-    MIN_VERTICES_COUNT, MAX_VERTICES_COUNT, K_COUNT)
+    MIN_VERTICES_COUNT, MAX_VERTICES_COUNT, MAX_SIZE, K_COUNT)
 
 COL_COUNT = 8
 
 
 def create_directories():
     "Creates necesesary directories"
-    os.makedirs("data/vertices", exist_ok=True)
+    os.makedirs('data/generations', exist_ok=True)
 
 
 def test_fitness(creature: Creature):
@@ -70,7 +69,7 @@ class Application(Gui):
     def create_creature(self, creature, i):
         ''' Creates a single creature '''
         self.creatures.append(creature)
-        image = creature.get_image(5)
+        image = creature.get_image(7)
         pillow_image = Image.fromarray(image)
         imgtk = ImageTk.PhotoImage(image=pillow_image)
         creature.frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
@@ -119,7 +118,8 @@ class Application(Gui):
         for i in range(POPULATION_SIZE):
             creature = Creature(
                 n=random.randint(MIN_VERTICES_COUNT, MAX_VERTICES_COUNT),
-                view_port=self.scroll_frame.view_port)
+                view_port=self.scroll_frame.view_port,
+                size=MAX_SIZE)
             self.create_creature(creature, i)
             progress = i * 100 // POPULATION_SIZE
             self.builder.get_object('progress')['value'] = progress
@@ -204,7 +204,8 @@ class Application(Gui):
         for i in range(k, k+RANDOM_NEW_POPULATION_SIZE):
             creature = Creature(
                 n=random.randint(MIN_VERTICES_COUNT, MAX_VERTICES_COUNT),
-                view_port=self.scroll_frame.view_port)
+                view_port=self.scroll_frame.view_port,
+                size=MAX_SIZE)
             self.create_creature(creature, i)
 
         self.builder.get_object('details')['text'] = f'Generation #{len(self.generations)+1}'
