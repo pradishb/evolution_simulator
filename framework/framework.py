@@ -150,14 +150,6 @@ class FrameworkBase(b2ContactListener):
             timeStep = 1.0 / settings.hz
         else:
             timeStep = 0.0
-        if self.render:
-            for key in self.creature_bodies.keys():
-                fitness = get_fitness(self.creature_bodies[key].values(),
-                                      self.starting_position[key])
-                self.Print(str(key)+"'s Fitness : "+str(fitness), (225, 225, 225, 225))
-            renderer = self.renderer
-        else:
-            renderer = None
 
         # If paused, display so
         if settings.pause:
@@ -169,18 +161,18 @@ class FrameworkBase(b2ContactListener):
             self.Print("****PAUSED****", (200, 0, 0))
 
         # Set the flags based on what the settings show
-        if renderer:
+        if self.renderer:
             # convertVertices is only applicable when using b2DrawExtended.  It
             # indicates that the C code should transform box2d coords to screen
             # coordinates.
-            is_extended = isinstance(renderer, b2DrawExtended)
-            renderer.flags = dict(drawShapes=settings.drawShapes,
-                                  drawJoints=settings.drawJoints,
-                                  drawAABBs=settings.drawAABBs,
-                                  drawPairs=settings.drawPairs,
-                                  drawCOMs=settings.drawCOMs,
-                                  convertVertices=is_extended,
-                                  )
+            is_extended = isinstance(self.renderer, b2DrawExtended)
+            self.renderer.flags = dict(drawShapes=settings.drawShapes,
+                                       drawJoints=settings.drawJoints,
+                                       drawAABBs=settings.drawAABBs,
+                                       drawPairs=settings.drawPairs,
+                                       drawCOMs=settings.drawCOMs,
+                                       convertVertices=is_extended,
+                                       )
 
         # Set the other settings that aren't contained in the flags
         self.world.warmStarting = settings.enableWarmStarting
@@ -201,8 +193,8 @@ class FrameworkBase(b2ContactListener):
         # converted to screen coordinates
         t_draw = time()
 
-        if renderer is not None:
-            renderer.StartDraw()
+        if self.renderer is not None:
+            self.renderer.StartDraw()
 
         self.world.DrawDebugData()
 
@@ -214,47 +206,47 @@ class FrameworkBase(b2ContactListener):
         # Take care of additional drawing (fps, mouse joint, slingshot bomb,
         # contact points)
 
-        if renderer:
+        if self.renderer:
             # If there's a mouse joint, draw the connection between the object
             # and the current pointer position.
 
             if self.mouseJoint:
-                p1 = renderer.to_screen(self.mouseJoint.anchorB)
-                p2 = renderer.to_screen(self.mouseJoint.target)
+                p1 = self.renderer.to_screen(self.mouseJoint.anchorB)
+                p2 = self.renderer.to_screen(self.mouseJoint.target)
 
-                renderer.DrawPoint(p1, settings.pointSize,
-                                   self.colors['mouse_point'])
-                renderer.DrawPoint(p2, settings.pointSize,
-                                   self.colors['mouse_point'])
-                renderer.DrawSegment(p1, p2, self.colors['joint_line'])
+                self.renderer.DrawPoint(p1, settings.pointSize,
+                                        self.colors['mouse_point'])
+                self.renderer.DrawPoint(p2, settings.pointSize,
+                                        self.colors['mouse_point'])
+                self.renderer.DrawSegment(p1, p2, self.colors['joint_line'])
 
             # Draw the slingshot bomb
             if self.bombSpawning:
-                renderer.DrawPoint(renderer.to_screen(self.bombSpawnPoint),
-                                   settings.pointSize, self.colors['bomb_center'])
-                renderer.DrawSegment(renderer.to_screen(self.bombSpawnPoint),
-                                     renderer.to_screen(self.mouseWorld),
-                                     self.colors['bomb_line'])
+                self.renderer.DrawPoint(self.renderer.to_screen(self.bombSpawnPoint),
+                                        settings.pointSize, self.colors['bomb_center'])
+                self.renderer.DrawSegment(self.renderer.to_screen(self.bombSpawnPoint),
+                                          self.renderer.to_screen(self.mouseWorld),
+                                          self.colors['bomb_line'])
 
             # Draw each of the contact points in different colors.
             if self.settings.drawContactPoints:
                 for point in self.points:
                     if point['state'] == b2_addState:
-                        renderer.DrawPoint(renderer.to_screen(point['position']),
-                                           settings.pointSize,
-                                           self.colors['contact_add'])
+                        self.renderer.DrawPoint(self.renderer.to_screen(point['position']),
+                                                settings.pointSize,
+                                                self.colors['contact_add'])
                     elif point['state'] == b2_persistState:
-                        renderer.DrawPoint(renderer.to_screen(point['position']),
-                                           settings.pointSize,
-                                           self.colors['contact_persist'])
+                        self.renderer.DrawPoint(self.renderer.to_screen(point['position']),
+                                                settings.pointSize,
+                                                self.colors['contact_persist'])
 
             if settings.drawContactNormals:
                 for point in self.points:
-                    p1 = renderer.to_screen(point['position'])
-                    p2 = renderer.axisScale * point['normal'] + p1
-                    renderer.DrawSegment(p1, p2, self.colors['contact_normal'])
+                    p1 = self.renderer.to_screen(point['position'])
+                    p2 = self.renderer.axisScale * point['normal'] + p1
+                    self.renderer.DrawSegment(p1, p2, self.colors['contact_normal'])
 
-            renderer.EndDraw()
+            self.renderer.EndDraw()
             t_draw = time() - t_draw
 
             t_draw = max(b2_epsilon, t_draw)
@@ -275,6 +267,13 @@ class FrameworkBase(b2ContactListener):
             else:
                 if len(self.t_steps) > 2:
                     self.t_steps.pop(0)
+
+            if self.render:
+                if len(self.creature_bodies) == 1:
+                    key = list(self.creature_bodies.keys())[0]
+                    fitness = get_fitness(
+                        self.creature_bodies[key].values(), self.starting_position[key])
+                    self.Print(f'Fitness: {"{:.2f}".format(fitness)}', (225, 225, 225, 225))
 
             if settings.drawFPS:
                 self.Print("Combined FPS %d" % self.fps)

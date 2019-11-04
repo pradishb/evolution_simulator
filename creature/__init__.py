@@ -82,7 +82,7 @@ class Creature:
             self.view_port = view_port
             self.frame = tk.Frame(self.view_port)
             self.description = tk.Label(
-                self.frame, font=(None, 6), width=10, anchor='w', justify='left')
+                self.frame, font=(None, 7,), width=10, anchor='w', justify='left')
         else:
             self.view_port = None
             self.frame = None
@@ -136,7 +136,7 @@ class Creature:
     def set_description(self):
         ''' Sets the description label component '''
         self.description['text'] = (
-            f'Creature #{self.identity} \n'
-            f'Fitness: {"{:.2f}".format(self.fitness)}\n'
-            f'Species: {self.get_species()}'
+            f'Creature {self.identity} \n'
+            f'Fit.: {"{:.2f}".format(self.fitness)}\n'
+            f'Spe.: {self.get_species()}'
         )

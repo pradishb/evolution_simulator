@@ -26,8 +26,6 @@ class Environment(Framework):
         Environment.description = []
         Environment.creature_bodies = {}
         for creature in creatures:
-            Environment.description.append(f"Creature #{creature.identity}")
-
             body = {}
 
             for edge in creature.edges:
@@ -60,3 +58,5 @@ class Environment(Framework):
             Environment.creature_bodies[creature.identity] = body
             Environment.starting_position[creature.identity] = get_position_of_creature(
                 body.values())
+        if len(creatures) == 1:
+            Environment.description.append(f"Creature #{creatures[0].identity}")
