@@ -129,10 +129,14 @@ class Creature:
         cv2.imshow("", self.get_image(scale))
         cv2.waitKey()
 
+    def get_species(self):
+        ''' Returns the species code of the creature '''
+        return f'V{len(self.vertices)}E{len(self.edges)}'
+
     def set_description(self):
         ''' Sets the description label component '''
         self.description['text'] = (
             f'Creature #{self.identity} \n'
             f'Fitness: {"{:.2f}".format(self.fitness)}\n'
-            f'Species: V{len(self.vertices)}'
+            f'Species: {self.get_species()}'
         )

@@ -9,6 +9,7 @@ from PIL import Image, ImageTk
 import easygui
 
 from gui import Gui, ContextMenu, ScrollFrame
+from gui.utils import set_entry
 from environment import Environment
 from framework.framework import main as framework
 from reproduction import reproduce
@@ -24,14 +25,6 @@ COL_COUNT = 8
 def create_directories():
     "Creates necesesary directories"
     os.makedirs('data/generations', exist_ok=True)
-
-
-def test_fitness(creature: Creature):
-    ''' Tests the fitness of a single creature with render on '''
-    fitness = framework(Environment, True, [creature, ])
-    easygui.msgbox(
-        f'Fitness of creature #{creature.identity}: {"{:.2f}".format(fitness[creature.identity])}',
-        'Fitness Test Result')
 
 
 class Application(Gui):
@@ -64,7 +57,11 @@ class Application(Gui):
             self.serializable_creatures[creature.identity] = data
             creatures.append(creature.identity)
         self.generations.append(creatures)
-        save_generations(self.generations, self.serializable_creatures, 'default')
+        save_generations(
+            self.generations,
+            self.serializable_creatures,
+            self.builder.get_object('save_as').get()
+        )
 
     def create_creature(self, creature, i):
         ''' Creates a single creature '''
@@ -75,7 +72,7 @@ class Application(Gui):
         creature.frame.grid(row=i//COL_COUNT, column=i % COL_COUNT)
         creature.set_description()
         right_click = ContextMenu(self.master, [
-            {'label': 'Test fitness', 'command': lambda c=creature: test_fitness(c)}, ])
+            {'label': 'Test fitness', 'command': lambda c=creature: self.test_fitness(c)}, ])
         creature.description.grid(sticky='w')
         panel = tk.Label(creature.frame)
         panel.bind('<Button-3>', right_click.popup)
@@ -111,6 +108,37 @@ class Application(Gui):
         ''' Load button callback '''
         threading.Thread(target=self.threaded_load, daemon=True).start()
 
+    def show_analytics(self):
+        ''' Show analytics button callback '''
+        if self.generations == []:
+            easygui.msgbox('There is no data to show', 'Error')
+            return
+
+        medians = []
+        histogram = []
+        species = {}
+        generations_count = len(self.generations)
+        for i, generation in enumerate(self.generations):
+            median_index = (len(generation) - 1)//2
+            creature_id = generation[median_index]
+            creature = self.serializable_creatures[creature_id]
+            medians.append(creature['fitness'])
+            for creature_id in generation:
+                creature = self.serializable_creatures[creature_id]
+                creature = Creature(**creature)
+                cspecies = creature.get_species()
+                if cspecies not in species:
+                    species[cspecies] = [0] * generations_count
+                species[cspecies][i] += 1
+
+        for creature_id in self.generations[-1]:
+            creature = self.serializable_creatures[creature_id]
+            histogram.append(creature['fitness'])
+
+        print(species)
+        print(medians)
+        print(histogram)
+
     def threaded_create(self):
         ''' Creates an initial population of creatures '''
         self.builder.get_object('progress')['value'] = 0
@@ -130,9 +158,10 @@ class Application(Gui):
         ''' Finds the fitness of all the creatures with render off '''
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('find_fitness')['state'] = 'disabled'
-        fitness_es = framework(Environment, render, self.creatures)
+        fitness = framework(
+            Environment, render, f'Generation #{self.get_generation()}', self.creatures)
         for i, creature in enumerate(self.creatures):
-            creature.fitness = fitness_es[creature.identity]
+            creature.fitness = fitness[creature.identity]
             creature.set_description()
             creature.description.grid(sticky='w')
             progress = i * 100 // POPULATION_SIZE
@@ -208,7 +237,7 @@ class Application(Gui):
                 size=MAX_SIZE)
             self.create_creature(creature, i)
 
-        self.builder.get_object('details')['text'] = f'Generation #{len(self.generations)+1}'
+        self.builder.get_object('details')['text'] = f'Generation #{self.get_generation()}'
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('train')['state'] = 'active'
         self.builder.get_object('find_fitness')['state'] = 'active'
@@ -242,12 +271,25 @@ class Application(Gui):
             creature_data = self.serializable_creatures[creature_id]
             creature = Creature(**creature_data, view_port=self.scroll_frame.view_port)
             self.create_creature(creature, i)
+        set_entry(self.builder, 'save_as', os.path.basename(os.path.splitext(file_path)[0]))
         self.builder.get_object('create')['state'] = 'disabled'
-        self.builder.get_object('train')['state'] = 'disabled'
+        self.builder.get_object('train')['state'] = 'active'
         self.builder.get_object('find_fitness')['state'] = 'disabled'
         self.builder.get_object('sort')['state'] = 'disabled'
         self.builder.get_object('do_selection')['state'] = 'active'
         self.builder.get_object('reproduce')['state'] = 'disabled'
+
+    def test_fitness(self, creature: Creature):
+        ''' Tests the fitness of a single creature with render on '''
+        fitness = framework(Environment, True, f'Generation #{self.get_generation()}', [creature])
+        easygui.msgbox(
+            f'Fitness of creature'
+            f'#{creature.identity}: {"{:.2f}".format(fitness[creature.identity])}',
+            'Fitness Test Result')
+
+    def get_generation(self):
+        ''' Returns the current generation '''
+        return len(self.generations)+1
 
 
 def main():
