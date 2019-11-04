@@ -3,6 +3,7 @@ import tkinter as tk
 import threading
 import os
 import random
+from datetime import datetime
 from copy import copy
 
 from PIL import Image, ImageTk
@@ -38,10 +39,9 @@ class Application(Gui):
         self.builder.get_object('sort')['state'] = 'disabled'
         self.builder.get_object('do_selection')['state'] = 'disabled'
         self.builder.get_object('reproduce')['state'] = 'disabled'
-
-        self.creatures = []
-        self.serializable_creatures = {}
-        self.generations = []
+        set_entry(
+            self.builder, 'save_as',
+            f'P{POPULATION_SIZE}_{datetime.now().strftime("%m-%d-%YT%H:%M")}')
 
         self.scroll_frame = ScrollFrame(self.builder.get_object('creatures_frame'))
         self.scroll_frame.grid(sticky='nsew')
@@ -49,6 +49,10 @@ class Application(Gui):
             self.scroll_frame.view_port.columnconfigure(col, minsize=66)
         for row in range(POPULATION_SIZE//COL_COUNT + 1):
             self.scroll_frame.view_port.rowconfigure(row, minsize=106)
+
+        self.creatures = []
+        self.serializable_creatures = {}
+        self.generations = []
 
     def create_generation(self):
         ''' Creates a generation file '''
