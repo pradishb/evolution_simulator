@@ -7,6 +7,8 @@ LABEL_SIZE = 9
 def show_analytics(generation, histogram, medians, species):
     ''' Shows the analytcs using matplotlib '''
     fig = plt.figure()
+    ax = plt.subplot(111)
+
     fig.canvas.set_window_title('Analytics')
 
     # histogram
@@ -29,8 +31,9 @@ def show_analytics(generation, histogram, medians, species):
     plt.title(f'Species population according to generations', fontsize=10)
     plt.ylabel('Species Count', fontsize=LABEL_SIZE)
     plt.xlabel('Generation', fontsize=LABEL_SIZE)
-    plt.legend(loc='upper left', prop={'size': 6})
-    # plt.subplots_adjust(hspace=1, wspace=1)
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    plt.legend(loc='upper left', prop={'size': 6}, bbox_to_anchor=(1, 1))
     fig.canvas.manager.full_screen_toggle()
     fig.tight_layout()
     plt.show()
