@@ -1,7 +1,7 @@
 "Environment Module"
 from Box2D import b2EdgeShape, b2FixtureDef, b2PolygonShape
 
-from settings import STEP_LIMIT
+from settings import STEP_LIMIT, MOTOR_SPEED, MAX_MOTOR_TORQUE
 from creature import Creature, find_adjacent_edges
 from framework.framework import Framework
 from maths.maths import line_to_rectangle
@@ -55,9 +55,10 @@ class Environment(Framework):
                         bodyB=body[tuple(a_edge)],
                         anchor=anchor,
                         collideConnected=True,
-                        motorSpeed=100,
-                        maxMotorTorque=250,
+                        motorSpeed=MOTOR_SPEED,
+                        maxMotorTorque=MAX_MOTOR_TORQUE,
                         enableMotor=True,
                     )
             Environment.creature_bodies[creature.identity] = body
-            Environment.starting_position[creature.identity] = get_position_of_creature(body.values())
+            Environment.starting_position[creature.identity] = get_position_of_creature(
+                body.values())
