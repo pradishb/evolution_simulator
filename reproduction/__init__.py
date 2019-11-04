@@ -43,10 +43,12 @@ def reproduce(creature: Creature):
         offspring.edges = list(edges)
 
     vertex = offspring.vertices[0]
-    x = vertex[0] + randint(-MAX_VERTICES_PIXEL_CHANGE, MAX_VERTICES_PIXEL_CHANGE)
+    x_del = randint(1, MAX_VERTICES_PIXEL_CHANGE)
+    y_del = randint(1, MAX_VERTICES_PIXEL_CHANGE)
+    x = vertex[0] + x_del * choice([-1, 1])
     x = max(0, x)
     x = min(offspring.size-1, x)
-    y = vertex[1] + randint(-MAX_VERTICES_PIXEL_CHANGE, MAX_VERTICES_PIXEL_CHANGE)
+    y = vertex[1] + y_del * choice([-1, 1])
     y = max(0, y)
     y = min(offspring.size-1, y)
     offspring.vertices[0] = (x, y)
