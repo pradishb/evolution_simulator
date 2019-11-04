@@ -3,7 +3,7 @@ from random import randint, choice, shuffle
 from creature import Creature
 from creature import get_all_possible_edges
 
-from settings import MAX_EDGE_CHANGE_COUNT
+from settings import MAX_EDGE_CHANGE_COUNT, MAX_VERTICES_PIXEL_CHANGE
 
 
 def reproduce(creature: Creature):
@@ -39,5 +39,14 @@ def reproduce(creature: Creature):
             remove_list -= {(random_edge)}
             edges = edges - {random_edge}
         offspring.edges = list(edges)
+
+    for i, vertex in enumerate(offspring.vertices):
+        x = vertex[0] + randint(-MAX_VERTICES_PIXEL_CHANGE, MAX_VERTICES_PIXEL_CHANGE)
+        x = max(0, x)
+        x = min(offspring.size, x)
+        y = vertex[1] + randint(-MAX_VERTICES_PIXEL_CHANGE, MAX_VERTICES_PIXEL_CHANGE)
+        y = max(0, y)
+        y = min(offspring.size, y)
+        offspring.vertices[i] = (x, y)
 
     return offspring
