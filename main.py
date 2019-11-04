@@ -111,7 +111,31 @@ class Application(Gui):
 
     def show_analytics(self):
         ''' Show analytics button callback '''
-        threading.Thread(target=self.threaded_show_analytics, daemon=True).start()
+        if self.generations == []:
+            easygui.msgbox('There is no data to show', 'Error')
+            return
+
+        medians = []
+        histogram = []
+        species = {}
+        generations_count = len(self.generations)
+        for i, generation in enumerate(self.generations):
+            median_index = (len(generation) - 1)//2
+            creature_id = generation[median_index]
+            creature = self.serializable_creatures[creature_id]
+            medians.append(creature['fitness'])
+            for creature_id in generation:
+                creature = self.serializable_creatures[creature_id]
+                creature = Creature(**creature)
+                cspecies = creature.get_species()
+                if cspecies not in species:
+                    species[cspecies] = [0] * generations_count
+                species[cspecies][i] += 1
+
+        for creature_id in self.generations[-1]:
+            creature = self.serializable_creatures[creature_id]
+            histogram.append(creature['fitness'])
+        show_analytics(self.get_generation(), histogram, medians, species)
 
     def threaded_create(self):
         ''' Creates an initial population of creatures '''
@@ -252,34 +276,6 @@ class Application(Gui):
         self.builder.get_object('sort')['state'] = 'disabled'
         self.builder.get_object('do_selection')['state'] = 'active'
         self.builder.get_object('reproduce')['state'] = 'disabled'
-
-    def threaded_show_analytics(self):
-        ''' Prepares and shows the training data analytics '''
-        if self.generations == []:
-            easygui.msgbox('There is no data to show', 'Error')
-            return
-
-        medians = []
-        histogram = []
-        species = {}
-        generations_count = len(self.generations)
-        for i, generation in enumerate(self.generations):
-            median_index = (len(generation) - 1)//2
-            creature_id = generation[median_index]
-            creature = self.serializable_creatures[creature_id]
-            medians.append(creature['fitness'])
-            for creature_id in generation:
-                creature = self.serializable_creatures[creature_id]
-                creature = Creature(**creature)
-                cspecies = creature.get_species()
-                if cspecies not in species:
-                    species[cspecies] = [0] * generations_count
-                species[cspecies][i] += 1
-
-        for creature_id in self.generations[-1]:
-            creature = self.serializable_creatures[creature_id]
-            histogram.append(creature['fitness'])
-        show_analytics(self.get_generation(), histogram, medians, species)
 
     def test_fitness(self, creature: Creature):
         ''' Tests the fitness of a single creature with render on '''
