@@ -129,6 +129,41 @@
       </object>
     </child>
     <child>
+      <object class="tk.Frame" id="save_container">
+        <property name="height">25</property>
+        <property name="width">700</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="columnspan">11</property>
+          <property name="propagate">False</property>
+          <property name="row">1</property>
+        </layout>
+        <child>
+          <object class="tk.Button" id="save_as">
+            <property name="text" translatable="yes">Save as</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">False</property>
+              <property name="row">0</property>
+              <property name="sticky">nw</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Entry" id="entry_as">
+            <property name="text" translatable="yes">Default
+</property>
+            <property name="width">18</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
       <object class="ttk.Progressbar" id="progress">
         <property name="length">700</property>
         <property name="orient">horizontal</property>
@@ -136,25 +171,25 @@
           <property name="column">0</property>
           <property name="columnspan">11</property>
           <property name="propagate">True</property>
-          <property name="row">1</property>
+          <property name="row">2</property>
         </layout>
       </object>
     </child>
     <child>
       <object class="tk.Frame" id="container">
-        <property name="height">450</property>
+        <property name="height">425</property>
         <property name="width">700</property>
         <layout>
           <property name="column">0</property>
           <property name="columnspan">11</property>
           <property name="propagate">False</property>
-          <property name="row">2</property>
+          <property name="row">3</property>
           <property name="sticky">nw</property>
         </layout>
         <child>
           <object class="tk.LabelFrame" id="details_tab">
             <property name="font">TkDefaultFont</property>
-            <property name="height">450</property>
+            <property name="height">425</property>
             <property name="padx">0</property>
             <property name="text" translatable="yes">Details</property>
             <property name="width">150</property>
@@ -179,7 +214,7 @@
         </child>
         <child>
           <object class="tk.Frame" id="creatures_frame">
-            <property name="height">450</property>
+            <property name="height">425</property>
             <property name="width">550</property>
             <layout>
               <property name="column">1</property>
@@ -187,7 +222,7 @@
               <property name="row">0</property>
               <rows>
                 <row id="0">
-                  <property name="minsize">450</property>
+                  <property name="minsize">425</property>
                 </row>
               </rows>
               <columns>
