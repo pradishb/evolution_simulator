@@ -41,7 +41,7 @@ class Application(Gui):
         self.builder.get_object('reproduce')['state'] = 'disabled'
         set_entry(
             self.builder, 'save_as',
-            f'P{POPULATION_SIZE}_{datetime.now().strftime("%m-%d-%YT%H:%M")}')
+            f'P{POPULATION_SIZE}_{datetime.now().strftime("%m-%d-%YT%H-%M")}')
 
         self.scroll_frame = ScrollFrame(self.builder.get_object('creatures_frame'))
         self.scroll_frame.grid(sticky='nsew')
@@ -137,7 +137,6 @@ class Application(Gui):
 
     def threaded_find_fitness(self, render=True):
         ''' Finds the fitness of all the creatures with render off '''
-        self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('find_fitness')['state'] = 'disabled'
         fitness = framework(
             Environment, render, f'Generation #{self.get_generation()}', self.creatures)
@@ -146,8 +145,6 @@ class Application(Gui):
             creature.set_description()
             creature.description.grid(sticky='w')
             progress = i * 100 // POPULATION_SIZE
-            self.builder.get_object('progress')['value'] = progress
-        self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('sort')['state'] = 'active'
 
     def threaded_sort(self):
@@ -229,9 +226,13 @@ class Application(Gui):
             self.builder.get_object('train')['state'] = 'disabled'
             self.builder.get_object('find_fitness')['state'] = 'disabled'
             repeat = int(self.builder.get_object('repeat').get())
-            for _ in range(repeat):
+
+            for i in range(repeat):
                 self.threaded_selection()
                 self.threaded_reproduce()
+
+                progress = i * 100 // repeat
+                self.builder.get_object('progress')['value'] = progress
                 self.threaded_find_fitness(render=False)
                 self.threaded_sort()
             self.builder.get_object('do_selection')['state'] = 'active'
@@ -264,7 +265,7 @@ class Application(Gui):
         ''' Tests the fitness of a single creature with render on '''
         fitness = framework(Environment, True, f'Generation #{self.get_generation()}', [creature])
         easygui.msgbox(
-            f'Fitness of creature'
+            f'Fitness of creature '
             f'#{creature.identity}: {"{:.2f}".format(fitness[creature.identity])}',
             'Fitness Test Result')
 

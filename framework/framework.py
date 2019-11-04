@@ -160,6 +160,9 @@ class FrameworkBase(b2ContactListener):
 
             self.Print("****PAUSED****", (200, 0, 0))
 
+        if not self.render:
+            self.renderer = None
+
         # Set the flags based on what the settings show
         if self.renderer:
             # convertVertices is only applicable when using b2DrawExtended.  It
@@ -275,23 +278,23 @@ class FrameworkBase(b2ContactListener):
                         self.creature_bodies[key].values(), self.starting_position[key])
                     self.Print(f'Fitness: {"{:.2f}".format(fitness)}', (225, 225, 225, 225))
 
-            if settings.drawFPS:
-                self.Print("Combined FPS %d" % self.fps)
+        if settings.drawFPS:
+            self.Print("Combined FPS %d" % self.fps)
 
-            if settings.drawStats:
-                self.Print("bodies=%d contacts=%d joints=%d proxies=%d" %
-                           (self.world.bodyCount, self.world.contactCount,
-                            self.world.jointCount, self.world.proxyCount))
+        if settings.drawStats:
+            self.Print("bodies=%d contacts=%d joints=%d proxies=%d" %
+                       (self.world.bodyCount, self.world.contactCount,
+                        self.world.jointCount, self.world.proxyCount))
 
-                self.Print("hz %d vel/pos iterations %d/%d" %
-                           (settings.hz, settings.velocityIterations,
-                            settings.positionIterations))
+            self.Print("hz %d vel/pos iterations %d/%d" %
+                       (settings.hz, settings.velocityIterations,
+                        settings.positionIterations))
 
-                if self.t_draws and self.t_steps:
-                    self.Print("Potential draw rate: %.2f fps Step rate: %.2f Hz"
-                               "" % (sum(self.t_draws) / len(self.t_draws),
-                                     sum(self.t_steps) / len(self.t_steps))
-                               )
+            if self.t_draws and self.t_steps:
+                self.Print("Potential draw rate: %.2f fps Step rate: %.2f Hz"
+                           "" % (sum(self.t_draws) / len(self.t_draws),
+                                 sum(self.t_steps) / len(self.t_steps))
+                           )
 
     def ShiftMouseDown(self, p):
         """

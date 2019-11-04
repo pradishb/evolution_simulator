@@ -61,7 +61,6 @@ def show_analytics(generation_number, generations, serializable_creatures):
     plt.ylabel('Number of Creatures', fontsize=LABEL_SIZE)
     plt.xlabel('Generation', fontsize=LABEL_SIZE)
 
-    plt.legend(loc='upper center', prop={'size': 6}, bbox_to_anchor=(0.5, -0.4),
-               fancybox=True, shadow=True, ncol=8)
+    plt.legend(title='Species', title_fontsize=8, prop={'size': 8}, loc='lower left', ncol=8)
     fig.tight_layout()
     plt.show()

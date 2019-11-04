@@ -131,7 +131,7 @@ class Creature:
 
     def get_species(self):
         ''' Returns the species code of the creature '''
-        return f'V{len(self.vertices)}E{len(self.edges)}'
+        return f'V{len(self.vertices)}'
 
     def set_description(self):
         ''' Sets the description label component '''
