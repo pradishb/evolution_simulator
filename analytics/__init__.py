@@ -5,7 +5,8 @@ import numpy as np
 
 def show_analytics(generation, histogram, medians, species):
     ''' Shows the analytcs using matplotlib '''
-    _ = plt.figure()
+    fig = plt.figure()
+    fig.canvas.set_window_title('Analytics')
 
     # histogram
     plt.subplot2grid((2, 2), (0, 0))
