@@ -233,10 +233,9 @@ class PygameFramework(FrameworkBase):
         if fwSettings.onlyInit:  # testing mode doesn't initialize pygame
             return
 
-        print('Initializing pygame framework...')
         # Pygame Initialization
         pygame.init()
-        caption = "Python Box2D Testbed - " + self.name
+        caption = self.name
         pygame.display.set_caption(caption)
 
         # Screen and debug draw

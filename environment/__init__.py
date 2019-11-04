@@ -11,13 +11,11 @@ THICKNESS = 0.5
 
 class Environment(Framework):
     "Environment class"
-    name = "Evolution Simulator"
-
     speed = 1000  # platform speed
-
     env = None
 
-    def __init__(self, creatures):
+    def __init__(self, name, creatures):
+        Environment.name = name
         self.env = super(Environment, self).__init__()
         self.settings.drawJoints = False
         Environment.step_limit = STEP_LIMIT

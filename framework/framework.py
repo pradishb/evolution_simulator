@@ -136,14 +136,14 @@ class FrameworkBase(b2ContactListener):
         self.creature_bodies = {}
         # Box2D-callbacks
         self.destructionListener = None
-        
+
     def Step(self, settings):
         """
         The main physics step.
 
         Takes care of physics drawing (callbacks are executed after the world.Step() )
         and drawing additional information.
-        """        
+        """
         self.stepCount += 1
         # Don't do anything if the setting's Hz are <= 0
         if settings.hz > 0.0:
@@ -519,7 +519,6 @@ def main(test_class, render, *args):
     """
     Loads the test class and executes it.
     """
-    print("Loading %s..." % test_class.name)
     test = test_class(*args)
     if fwSettings.onlyInit:
         return
