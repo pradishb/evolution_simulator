@@ -139,8 +139,7 @@
         </child>
         <child>
           <object class="tk.Entry" id="save_as">
-            <property name="text" translatable="yes">default
-</property>
+            <property name="text" translatable="yes">default</property>
             <property name="width">18</property>
             <layout>
               <property name="column">1</property>
