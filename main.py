@@ -123,7 +123,7 @@ class Application(Gui):
         if self.generations == []:
             easygui.msgbox('There is no data to show', 'Error')
             return
-        show_analytics(self.get_generation(), self.generations, self.serializable_creatures)
+        show_analytics(self.get_generation()-1, self.generations, self.serializable_creatures)
 
     def threaded_create(self):
         ''' Creates an initial population of creatures '''

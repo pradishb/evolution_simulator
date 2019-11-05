@@ -44,21 +44,21 @@ def show_analytics(generation_number, generations, serializable_creatures):
     plt.subplot2grid((2, 2), (0, 0))
     plt.hist(histogram, bins=60)
     plt.title(f'Histogram of generation #{generation_number}', fontsize=TITLE_SIZE)
-    plt.xlabel('Fitness Value', fontsize=LABEL_SIZE)
-    plt.ylabel('Number of Species', fontsize=LABEL_SIZE)
+    plt.xlabel('Fitness value', fontsize=LABEL_SIZE)
+    plt.ylabel('Number of creatures', fontsize=LABEL_SIZE)
 
     # medians
     plt.subplot2grid((2, 2), (0, 1))
     plt.plot(range(1, len(medians)+1), medians)
     plt.title(f'Median fitness of all generations', fontsize=TITLE_SIZE)
-    plt.ylabel('Median Fitness', fontsize=LABEL_SIZE)
+    plt.ylabel('Median fitness', fontsize=LABEL_SIZE)
     plt.xlabel('Generation', fontsize=LABEL_SIZE)
 
     # stackedplot for species
     plt.subplot2grid((2, 2), (1, 0), colspan=2)
     plt.stackplot(range(1, len(medians)+1), list(species.values()), labels=list(species.keys()))
     plt.title(f'Species population according to generations', fontsize=TITLE_SIZE)
-    plt.ylabel('Number of Creatures', fontsize=LABEL_SIZE)
+    plt.ylabel('Number of creatures', fontsize=LABEL_SIZE)
     plt.xlabel('Generation', fontsize=LABEL_SIZE)
 
     plt.legend(title='Species', title_fontsize=8, prop={'size': 8}, loc='lower left', ncol=8)
