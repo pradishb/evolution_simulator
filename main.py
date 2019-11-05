@@ -162,6 +162,7 @@ class Application(Gui):
             creature.fitness = fitness[creature.identity]
             creature.set_description()
             creature.description.grid(sticky='w')
+        self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('sort')['state'] = 'active'
 
     def threaded_sort(self):
@@ -222,7 +223,7 @@ class Application(Gui):
                 self.creatures.append(creature)
                 creature.frame.grid(row=k//COL_COUNT, column=k % COL_COUNT)
                 k += 1
-                offspring = reproduce(creature)
+                offspring = reproduce(creature, self.serializable_creatures)
                 self.create_creature(offspring, k)
                 k += 1
             progress = i * 100 // total_creatures

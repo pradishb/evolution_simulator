@@ -101,7 +101,7 @@ class Cui:
         for creature in creatures:
             self.creatures.append(creature)
             for _ in range(OFFSPRINGS_PER_SELECTION_SIZE):
-                offspring = reproduce(creature)
+                offspring = reproduce(creature, self.serializable_creatures)
                 self.creatures.append(offspring)
 
         for _ in range(RANDOM_NEW_POPULATION_SIZE):

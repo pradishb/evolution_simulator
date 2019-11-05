@@ -75,6 +75,7 @@ class Creature:
         self.vertices = kwargs.get('vertices', create_vertices(self.n, self.size))
         self.edges = kwargs.get('edges', create_edges(self.n))
         self.fitness = kwargs.get('fitness', 0.0)
+        self.parent = kwargs.get('parent', None)
 
         # Tkinter GUI
         view_port = kwargs.get('view_port', None)
@@ -98,6 +99,7 @@ class Creature:
             'vertices': self.vertices,
             'edges': self.edges,
             'fitness': self.fitness,
+            'parent': self.parent,
         }
 
     def get_image(self, scale=50):
