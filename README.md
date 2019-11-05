@@ -1,4 +1,5 @@
 # Evolution Simulator
+An environment which mimics the evolution of creatures using genetic algorithm
 
 ## Demo
 ### GUI
