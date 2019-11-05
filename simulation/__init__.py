@@ -60,9 +60,10 @@ class Simulation:
 
     def simulate(self, creatures, builder=None):
         ''' Simulates a bunch of creatures and returns thier fitness without gui '''
+        uncompleted = list(filter(lambda c: c.fitness == 0.0, creatures))
         if builder is None:
             pbar = tqdm(total=STEP_LIMIT, ncols=100)
-        bodies = create_creature_bodies(self.world, creatures)
+        bodies = create_creature_bodies(self.world, uncompleted)
         for i in range(STEP_LIMIT):
             if builder is not None:
                 progress = i * 100 // STEP_LIMIT
@@ -75,9 +76,26 @@ class Simulation:
 
         output = {}
         for creature in creatures:
-            output[creature.identity] = bodies[creature.identity].position[0]
+            if creature in uncompleted:
+                output[creature.identity] = bodies[creature.identity].position[0]
+            else:
+                output[creature.identity] = creature.fitness
         for body in self.world.bodies:
             if body != self.floor:
                 self.world.DestroyBody(body)
         self.world.ClearForces()
+        return output
+
+    def simulate_individually(self, creatures):
+        ''' Simulates a bunch of creatures individually and returns thier fitness without gui '''
+        pbar = tqdm(total=len(creatures), ncols=100)
+        output = {}
+        for creature in creatures:
+            body = create_creature_bodies(self.world, [creature])[creature.identity]
+            for _ in range(STEP_LIMIT):
+                self.world.Step(TIME_STEP, VEL_ITERS, POS_ITERS)
+            output[creature.identity] = body.position[0]
+            self.world.DestroyBody(body)
+            pbar.update()
+        pbar.close()
         return output

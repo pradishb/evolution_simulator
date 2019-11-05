@@ -1,5 +1,6 @@
 "Module to perform unittest"
 import unittest
+from timeit import timeit
 
 from creature import Creature
 from file import load_generations
@@ -20,7 +21,7 @@ class SimulationTestCase(unittest.TestCase):
             creature = Creature(**creature)
             creatures.append(creature)
         simulation = Simulation()
-        print(simulation.simulate(creatures))
+        print(timeit(lambda: print(simulation.simulate(creatures)), number=1))
 
 
 if __name__ == "__main__":
