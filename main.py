@@ -3,7 +3,6 @@ import tkinter as tk
 import threading
 import os
 import random
-from datetime import datetime
 from copy import copy
 
 from PIL import Image, ImageTk
@@ -18,6 +17,7 @@ from analytics import show_analytics
 from creature import Creature
 from file import save_generations, load_generations
 from simulation import Simulation
+from util import get_default_name
 from settings import (
     POPULATION_SIZE, SELECTION_SIZE, OFFSPRINGS_PER_SELECTION_SIZE, RANDOM_NEW_POPULATION_SIZE,
     MIN_VERTICES_COUNT, MAX_VERTICES_COUNT, MAX_SIZE, K_COUNT)
@@ -41,9 +41,7 @@ class Application(Gui):
         self.builder.get_object('sort')['state'] = 'disabled'
         self.builder.get_object('do_selection')['state'] = 'disabled'
         self.builder.get_object('reproduce')['state'] = 'disabled'
-        set_entry(
-            self.builder, 'save_as',
-            f'P{POPULATION_SIZE}_{datetime.now().strftime("%m-%d-%YT%H-%M")}')
+        set_entry(self.builder, 'save_as', get_default_name())
 
         self.scroll_frame = ScrollFrame(self.builder.get_object('creatures_frame'))
         self.scroll_frame.grid(sticky='nsew')

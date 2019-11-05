@@ -2,10 +2,13 @@
 from timeit import timeit
 
 from Box2D import b2World, b2PolygonShape, b2FixtureDef, b2EdgeShape
+from tqdm import tqdm
+
 from creature import Creature, find_adjacent_edges
 from file import load_generations
 from maths.maths import line_to_rectangle
 from settings import DENSITY, FRICTION, MOTOR_SPEED, MAX_MOTOR_TORQUE, STEP_LIMIT
+
 
 TIME_STEP = 1.0/60
 VEL_ITERS, POS_ITERS = 8, 3
@@ -57,15 +60,18 @@ class Simulation:
 
     def simulate(self, creatures, builder=None):
         ''' Simulates a bunch of creatures and returns thier fitness without gui '''
+        if builder is None:
+            pbar = tqdm(total=STEP_LIMIT, ncols=100)
         bodies = create_creature_bodies(self.world, creatures)
         for i in range(STEP_LIMIT):
             if builder is not None:
                 progress = i * 100 // STEP_LIMIT
                 builder.get_object('progress')['value'] = progress
+            else:
+                pbar.update(1)
             self.world.Step(TIME_STEP, VEL_ITERS, POS_ITERS)
-        if builder is not None:
-            progress = i * 100 // STEP_LIMIT
-            builder.get_object('progress')['value'] = 0
+        if builder is None:
+            pbar.close()
 
         output = {}
         for creature in creatures:
