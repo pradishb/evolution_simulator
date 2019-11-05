@@ -37,6 +37,7 @@ class Application(Gui):
         Gui.__init__(self, master, 'Evolution Simulator')
         self.builder.get_object('train')['state'] = 'disabled'
         self.builder.get_object('find_fitness')['state'] = 'disabled'
+        self.builder.get_object('find_fitness_no_gui')['state'] = 'disabled'
         self.builder.get_object('sort')['state'] = 'disabled'
         self.builder.get_object('do_selection')['state'] = 'disabled'
         self.builder.get_object('reproduce')['state'] = 'disabled'
@@ -95,6 +96,10 @@ class Application(Gui):
         ''' Find fitness button callback '''
         threading.Thread(target=self.threaded_find_fitness, daemon=True).start()
 
+    def find_fitness_no_gui(self):
+        ''' Find fitness no gui button callback '''
+        threading.Thread(target=self.threaded_find_fitness_no_gui, daemon=True).start()
+
     def sort(self):
         ''' Sort button callback '''
         threading.Thread(target=self.threaded_sort, daemon=True).start()
@@ -136,13 +141,26 @@ class Application(Gui):
             self.builder.get_object('progress')['value'] = progress
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('find_fitness')['state'] = 'active'
+        self.builder.get_object('find_fitness_no_gui')['state'] = 'active'
 
     def threaded_find_fitness(self, render=True):
-        ''' Finds the fitness of all the creatures with render off '''
+        ''' Finds the fitness of all the creatures'''
         self.builder.get_object('find_fitness')['state'] = 'disabled'
+        self.builder.get_object('find_fitness_no_gui')['state'] = 'disabled'
         fitness = framework(
             Environment, render, f'Generation #{self.get_generation()}', self.creatures)
-        for i, creature in enumerate(self.creatures):
+        for creature in self.creatures:
+            creature.fitness = fitness[creature.identity]
+            creature.set_description()
+            creature.description.grid(sticky='w')
+        self.builder.get_object('sort')['state'] = 'active'
+
+    def threaded_find_fitness_no_gui(self):
+        ''' Finds the fitness of all the creatures with render off '''
+        self.builder.get_object('find_fitness')['state'] = 'disabled'
+        self.builder.get_object('find_fitness_no_gui')['state'] = 'disabled'
+        fitness = self.simulation.simulate(self.creatures, self.builder)
+        for creature in self.creatures:
             creature.fitness = fitness[creature.identity]
             creature.set_description()
             creature.description.grid(sticky='w')
@@ -223,22 +241,20 @@ class Application(Gui):
         self.builder.get_object('progress')['value'] = 0
         self.builder.get_object('train')['state'] = 'active'
         self.builder.get_object('find_fitness')['state'] = 'active'
+        self.builder.get_object('find_fitness_no_gui')['state'] = 'active'
 
     def threaded_train(self):
         ''' Does training for x generations '''
         try:
             self.builder.get_object('train')['state'] = 'disabled'
             self.builder.get_object('find_fitness')['state'] = 'disabled'
+            self.builder.get_object('find_fitness_no_gui')['state'] = 'disabled'
             repeat = int(self.builder.get_object('repeat').get())
 
             for _ in range(repeat):
                 self.threaded_selection()
                 self.threaded_reproduce()
-                fitness = self.simulation.simulate(self.creatures)
-                for creature in self.creatures:
-                    creature.fitness = fitness[creature.identity]
-                    creature.set_description()
-                    creature.description.grid(sticky='w')
+                self.threaded_find_fitness_no_gui()
                 self.threaded_sort()
             self.builder.get_object('do_selection')['state'] = 'active'
         except ValueError:
@@ -262,6 +278,7 @@ class Application(Gui):
         self.builder.get_object('create')['state'] = 'disabled'
         self.builder.get_object('train')['state'] = 'active'
         self.builder.get_object('find_fitness')['state'] = 'disabled'
+        self.builder.get_object('find_fitness_no_gui')['state'] = 'disabled'
         self.builder.get_object('sort')['state'] = 'disabled'
         self.builder.get_object('do_selection')['state'] = 'active'
         self.builder.get_object('reproduce')['state'] = 'disabled'

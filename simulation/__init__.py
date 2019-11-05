@@ -5,7 +5,7 @@ from Box2D import b2World, b2PolygonShape, b2FixtureDef, b2EdgeShape
 from creature import Creature, find_adjacent_edges
 from file import load_generations
 from maths.maths import line_to_rectangle
-from settings import DENSITY, FRICTION, MOTOR_SPEED, MAX_MOTOR_TORQUE
+from settings import DENSITY, FRICTION, MOTOR_SPEED, MAX_MOTOR_TORQUE, STEP_LIMIT
 
 TIME_STEP = 1.0/60
 VEL_ITERS, POS_ITERS = 8, 3
@@ -55,11 +55,17 @@ class Simulation:
         self.world = b2World()
         self.floor = self.world.CreateBody(shapes=b2EdgeShape(vertices=[(-1000, -1), (1000, -1)]))
 
-    def simulate(self, creatures):
+    def simulate(self, creatures, builder=None):
         ''' Simulates a bunch of creatures and returns thier fitness without gui '''
         bodies = create_creature_bodies(self.world, creatures)
-        for _ in range(1200):
+        for i in range(STEP_LIMIT):
+            if builder is not None:
+                progress = i * 100 // STEP_LIMIT
+                builder.get_object('progress')['value'] = progress
             self.world.Step(TIME_STEP, VEL_ITERS, POS_ITERS)
+        if builder is not None:
+            progress = i * 100 // STEP_LIMIT
+            builder.get_object('progress')['value'] = 0
 
         output = {}
         for creature in creatures:

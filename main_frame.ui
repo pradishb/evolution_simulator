@@ -95,11 +95,22 @@
           </object>
         </child>
         <child>
+          <object class="tk.Button" id="find_fitness_no_gui">
+            <property name="command">find_fitness_no_gui</property>
+            <property name="text" translatable="yes">Find fitness (No GUI)</property>
+            <layout>
+              <property name="column">7</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
           <object class="tk.Button" id="sort">
             <property name="command">sort</property>
             <property name="text" translatable="yes">Sort</property>
             <layout>
-              <property name="column">7</property>
+              <property name="column">8</property>
               <property name="propagate">False</property>
               <property name="row">0</property>
             </layout>
