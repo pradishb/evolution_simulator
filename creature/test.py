@@ -10,7 +10,7 @@ class TestCases(unittest.TestCase):
         ''' Tests the creation of some creatures '''
         n = 5
         for _ in range(10):
-            creature = Creature(n)
+            creature = Creature(n=n)
             creature.draw_creature()
 
 
